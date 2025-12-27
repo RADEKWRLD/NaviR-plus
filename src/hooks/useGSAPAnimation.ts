@@ -8,7 +8,7 @@ import { gsap } from '@/lib/gsap/config';
  */
 export const useGSAPAnimation = <T extends HTMLElement>(
   animationFn: (element: T) => gsap.core.Timeline | gsap.core.Tween | void,
-  deps: any[] = []
+  deps: readonly unknown[] = []
 ) => {
   const elementRef = useRef<T>(null);
   const animationRef = useRef<gsap.core.Timeline | gsap.core.Tween | null>(null);

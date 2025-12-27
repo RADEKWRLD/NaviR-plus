@@ -12,7 +12,8 @@ const ANIMATED_WORDS = [
   'FIND',
   'BROWSE',
   'SURF',
-  'QUERY'
+  'QUERY',
+  'CODE'
 ];
 
 // Coolors palette - modern tech colors with low opacity
