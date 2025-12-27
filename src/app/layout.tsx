@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { TRPCProvider } from "@/lib/trpc/Provider";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 const oxanium = localFont({
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <body className={oxanium.variable}>
-        <TRPCProvider>{children}</TRPCProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

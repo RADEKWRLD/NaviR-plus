@@ -1,11 +1,27 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import GraphicBackground from '@/components/background/GraphicBackground';
 import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
 import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
 import SearchInput from '@/components/search/SearchInput';
 import HeaderIcons from '@/components/header/HeaderIcons';
+import BookmarkModal from '@/components/bookmarks/BookmarkModal';
 
 export default function Home() {
+  const [showBookmarkModal, setShowBookmarkModal] = useState(false);
+
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      setShowBookmarkModal(true);
+    };
+
+    window.addEventListener('contextmenu', handleContextMenu);
+    return () => window.removeEventListener('contextmenu', handleContextMenu);
+  }, []);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-white">
       {/* Background grid/geometric elements */}
@@ -35,6 +51,9 @@ export default function Home() {
       <div className="fixed top-4 right-4 md:top-8 md:right-8 z-20">
         <HeaderIcons />
       </div>
+
+      {/* Bookmark Modal */}
+      <BookmarkModal isOpen={showBookmarkModal} onClose={() => setShowBookmarkModal(false)} />
     </main>
   );
 }
