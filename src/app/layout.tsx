@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { TRPCProvider } from "@/lib/trpc/Provider";
 import "./globals.css";
+
+const plaster = localFont({
+  src: "../../public/Plaster-Regular.ttf",
+  variable: "--font-plaster",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "NaviR",
@@ -14,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh">
-      <body>
+      <body className={plaster.variable}>
         <TRPCProvider>{children}</TRPCProvider>
       </body>
     </html>
