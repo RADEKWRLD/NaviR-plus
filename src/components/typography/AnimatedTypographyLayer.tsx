@@ -39,7 +39,7 @@ export default function AnimatedTypographyLayer() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const spawnWord = useCallback(() => {
-    if (activeWords.length >= 3) return;
+    if (activeWords.length >= 1) return;
 
     const word = ANIMATED_WORDS[Math.floor(Math.random() * ANIMATED_WORDS.length)];
     const x = gsap.utils.random(10, 80);  // 10%-80% width
@@ -56,10 +56,11 @@ export default function AnimatedTypographyLayer() {
 
     setActiveWords((prev) => [...prev, newWord]);
 
-    // Remove after 5 seconds
+    // Remove after animation completes
+    // Type-in (~0.1s * avg 8 chars = 0.8s) + hold (1.5s) + delete (~0.05s * 8 = 0.4s) = ~2.7s + buffer
     setTimeout(() => {
       setActiveWords((prev) => prev.filter((w) => w.id !== newWord.id));
-    }, 5000);
+    }, 3500);
   }, [activeWords.length]);
 
   useEffect(() => {
@@ -90,35 +91,31 @@ function AnimatedWord({ word }: { word: AnimatedWord }) {
 
     const tl = gsap.timeline();
 
-    // Letters slide in one by one with rotation
+    // Typewriter effect: type in from left to right
     tl.fromTo(chars,
       {
-        y: 100,
-        opacity: 0,
-        rotateX: -90
+        opacity: 0
       },
       {
-        y: 0,
         opacity: 1,
-        rotateX: 0,
-        duration: 0.8,
-        stagger: 0.05,
-        ease: 'expo.out'
+        duration: 0.1,
+        stagger: 0.1,  // Each character appears 0.1s after the previous
+        ease: 'none'
       }
     );
 
     // Hold for a moment
     tl.to({}, { duration: 1.5 });
 
-    // Scatter effect - letters fly away in different directions
+    // Delete effect: remove from right to left
     tl.to(chars, {
-      x: () => gsap.utils.random(-100, 100),
-      y: () => gsap.utils.random(-100, 100),
-      rotation: () => gsap.utils.random(-45, 45),
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.02,
-      ease: 'power2.in'
+      duration: 0.1,
+      stagger: {
+        each: 0.05,
+        from: 'end'  // Start from the last character
+      },
+      ease: 'none'
     });
 
     return () => {
