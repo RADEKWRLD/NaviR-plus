@@ -10,7 +10,7 @@ export default function BookmarkGrid() {
   const sortedBookmarks = [...bookmarks].sort((a, b) => a.position - b.position);
 
   return (
-    <div className="w-full h-full flex items-center justify-center overflow-y-auto p-8">
+    <div className="w-full h-full flex items-center align-middle justify-center overflow-y-auto p-8">
       <div className="grid grid-cols-5 gap-30">
         {sortedBookmarks.map((bookmark) => (
           <div key={bookmark.id}>

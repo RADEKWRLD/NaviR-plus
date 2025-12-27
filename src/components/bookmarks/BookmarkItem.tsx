@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from '@/lib/gsap/config';
 import { Bookmark } from '@/types/bookmark';
 import { useBookmarks } from '@/context/BookmarkContext';
 
@@ -37,7 +38,7 @@ export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-30 h-30 border-[3px] border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+      className="relative w-30 h-30 border-[3px] border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:shadow-lg hover:scale-105 hover:border-[#FF6B35] transition-all duration-300"
     >
       {isHovered && (
         <button

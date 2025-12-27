@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap/config';
 import BookmarkGrid from './BookmarkGrid';
+import ASCIIBackground from './ASCIIBackground';
 
 interface BookmarkModalProps {
   isOpen: boolean;
@@ -49,7 +50,10 @@ export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
         className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-white/95 backdrop-blur-lg border-[3px] border-black overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <BookmarkGrid />
+        <ASCIIBackground />
+        <div className="relative z-10">
+          <BookmarkGrid />
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,63 @@
+'use client';
+
+import { useMemo, useEffect, useRef } from 'react';
+import { gsap } from '@/lib/gsap/config';
+
+export default function ASCIIBackground() {
+  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    // 为每一行添加不同速度的滚动动画
+    rowsRef.current.forEach((row, index) => {
+      if (row) {
+        const speed = 15 + (index % 5) * 3; // 不同行不同速度 15-27秒
+        gsap.to(row, {
+          x: '-=200',
+          duration: speed,
+          ease: 'none',
+          repeat: -1,
+        });
+      }
+    });
+  }, []);
+
+  const grid = useMemo(() => {
+    const chars = ['/', '\\', '|', '-', '_', '+', '=', '*', '#', '.', '~', '^', '<', '>'];
+
+    // 根据视口大小动态计算行列数
+    const rows = Math.ceil(window.innerHeight / 30);
+    const cols = Math.ceil(window.innerWidth / 10);
+
+    return Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, () => ({
+        char: chars[Math.floor(Math.random() * chars.length)],
+        isHighlight: Math.random() < 0.12,
+      }))
+    );
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 scale-300">
+        <div className="font-mono text-sm leading-relaxed">
+          {grid.map((row, i) => (
+            <div
+              key={i}
+              ref={(el) => (rowsRef.current[i] = el)}
+              className="flex justify-center whitespace-nowrap"
+            >
+              {row.map((cell, j) => (
+                <span
+                  key={j}
+                  className={cell.isHighlight ? 'text-[#FF6B35]' : 'text-gray-400'}
+                >
+                  {cell.char}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
