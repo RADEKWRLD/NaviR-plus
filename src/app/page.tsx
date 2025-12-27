@@ -3,6 +3,7 @@ import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyL
 import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
 import SearchInput from '@/components/search/SearchInput';
+import HeaderIcons from '@/components/header/HeaderIcons';
 
 export default function Home() {
   return (
@@ -26,8 +27,13 @@ export default function Home() {
       </div>
 
       {/* Typographic hero - fixed position top left */}
-      <div className="fixed top-8 left-8 md:top-16 md:left-16 z-5 pointer-events-none">
+      <div className="fixed top-8 left-8 md:top-8 md:left-8 z-5 pointer-events-none">
         <TypographicHero />
+      </div>
+
+      {/* Header icons - fixed position top right */}
+      <div className="fixed top-4 right-4 md:top-8 md:right-8 z-20">
+        <HeaderIcons />
       </div>
     </main>
   );
