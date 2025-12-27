@@ -51,7 +51,7 @@ export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <ASCIIBackground />
-        <div className="relative z-10">
+        <div className="relative z-10 h-full">
           <BookmarkGrid />
         </div>
       </div>
