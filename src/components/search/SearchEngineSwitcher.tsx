@@ -46,7 +46,7 @@ export default function SearchEngineSwitcher({ selectedEngine, onEngineChange }:
               <button
                 key={engine.id}
                 onClick={() => handleEngineSelect(engine)}
-                className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#0066FF] hover:text-white transition-colors ${
+                className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#FF6B35] hover:text-white transition-colors ${
                   selectedEngine.id === engine.id ? 'bg-black text-white' : ''
                 }`}
                 type="button"

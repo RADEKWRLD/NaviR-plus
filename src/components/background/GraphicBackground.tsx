@@ -14,7 +14,7 @@ export default function GraphicBackground() {
 
       {/* Decorative geometric shapes */}
       <div className="absolute top-10 right-10 w-24 h-24 border-[3px] border-black rotate-45" />
-      <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#0066FF] opacity-10" />
+      <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#FF6B35] opacity-10" />
     </div>
   );
 }
