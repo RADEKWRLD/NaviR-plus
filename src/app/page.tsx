@@ -1,27 +1,33 @@
-import SubtleGeometricBackground from '@/components/background/SubtleGeometricBackground';
-import FloatingTagManager from '@/components/floating/FloatingTagManager';
+import GraphicBackground from '@/components/background/GraphicBackground';
+import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
+import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
 import SearchInput from '@/components/search/SearchInput';
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Subtle geometric background - fills entire screen */}
-      <SubtleGeometricBackground />
+    <main className="relative min-h-screen overflow-hidden bg-white">
+      {/* Background grid/geometric elements */}
+      <GraphicBackground />
 
-      {/* Floating text tags layer */}
-      <FloatingTagManager />
+      {/* GSAP animated typography layer */}
+      <AnimatedTypographyLayer />
 
-      {/* Main content layer - vertically centered */}
+      {/* Main content - vertically centered */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8">
         {/* Centered search area */}
-        <div className="max-w-2xl w-full flex flex-col items-center gap-8">
+        <div className="w-full flex flex-col items-center gap-8">
           {/* Clock above search box */}
           <ClockDisplay />
 
           {/* Search input */}
           <SearchInput />
         </div>
+      </div>
+
+      {/* Typographic hero - fixed position top left */}
+      <div className="fixed top-8 left-8 md:top-16 md:left-16 z-5 pointer-events-none">
+        <TypographicHero />
       </div>
     </main>
   );

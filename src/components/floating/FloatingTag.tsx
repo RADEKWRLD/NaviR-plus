@@ -13,53 +13,45 @@ interface FloatingTagProps {
 
 export default function FloatingTag({ text, color, initialX, initialY, onComplete }: FloatingTagProps) {
   const tagRef = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!tagRef.current) return;
+    if (!tagRef.current || hasAnimated.current) return;
+
+    hasAnimated.current = true;
 
     const tl = gsap.timeline({
       onComplete
     });
 
-    // 1. Fade in from bottom with rise
+    // Slow rise from bottom to top - single continuous movement
     tl.fromTo(
       tagRef.current,
       {
-        y: 50,
+        y: 200,  // Start from further below
         x: initialX,
-        opacity: 0,
-        scale: 0.8
+        opacity: 0
       },
       {
-        y: initialY,
+        y: initialY - 400,  // End much higher (slow continuous rise)
         opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        ease: 'expo.out'
+        duration: 1,  
+        ease: 'none'  // Linear movement for continuous feel
       }
     );
 
-    // 2. Gentle floating motion
-    tl.to(tagRef.current, {
-      y: `+=${gsap.utils.random(-10, 10)}`,
-      duration: 3,
-      ease: 'sine.inOut',
-      repeat: 2,
-      yoyo: true
-    }, '+=0.5');
-
-    // 3. Fade out
+    // Fade out at the end
     tl.to(tagRef.current, {
       opacity: 0,
-      scale: 0.9,
-      duration: 0.6,
-      ease: 'expo.in'
-    }, '+=1');
+      duration: 1.5,
+      ease: 'power2.in'
+    }, '-=1.5');  // Start fading before reaching the top
 
     return () => {
       tl.kill();
     };
-  }, [initialX, initialY, onComplete]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run once, won't re-render
 
   return (
     <div
@@ -70,10 +62,10 @@ export default function FloatingTag({ text, color, initialX, initialY, onComplet
       }}
     >
       <div
-        className="px-5 py-2.5 rounded-full text-sm font-medium text-white shadow-lg whitespace-nowrap"
+        className="px-8 py-4 p-12 text-white shadow-lg whitespace-nowrap font-bold text-7xl"
         style={{
           backgroundColor: color,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+          borderRadius: '1rem'
         }}
       >
         {text}

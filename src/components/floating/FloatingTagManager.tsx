@@ -10,17 +10,14 @@ export default function FloatingTagManager() {
   const [activeTags, setActiveTags] = useState<FloatingText[]>([]);
 
   const getRandomPosition = useCallback(() => {
-    const { areaRadius } = TAG_SPAWN_CONFIG;
+    // Get window dimensions (with fallback for SSR)
+    const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
 
-    // Random angle in radians
-    const angle = Math.random() * Math.PI * 2;
-
-    // Random distance from center (100px to areaRadius)
-    const distance = gsap.utils.random(100, areaRadius);
-
-    // Convert polar coordinates to cartesian
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
+    // Random position anywhere on screen (with margins)
+    const margin = 100; // Keep tags away from edges
+    const x = gsap.utils.random(margin - windowWidth / 2, windowWidth / 2 - margin);
+    const y = gsap.utils.random(margin - windowHeight / 2, windowHeight / 2 - margin);
 
     return { x, y };
   }, []);

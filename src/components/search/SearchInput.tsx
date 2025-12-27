@@ -1,85 +1,85 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { gsap } from '@/lib/gsap/config';
-import { useSearchEngine } from '@/hooks/useSearchEngine';
 import SearchEngineSwitcher from './SearchEngineSwitcher';
+import { SEARCH_ENGINES } from '@/lib/constants/searchEngines';
 
 export default function SearchInput() {
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+  const [selectedEngine, setSelectedEngine] = useState(SEARCH_ENGINES[0]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { currentEngine, setCurrentEngine, handleSearch, allEngines } = useSearchEngine();
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    const searchUrl = selectedEngine.searchUrl.replace('{query}', encodeURIComponent(query));
+    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+  };
 
-    if (isFocused) {
+  const handleFocus = () => {
+    if (containerRef.current) {
       gsap.to(containerRef.current, {
-        borderColor: 'var(--border-focus)',
-        boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08)',
+        borderColor: 'var(--color-accent)',
         duration: 0.3,
-        ease: 'expo.out'
-      });
-    } else {
-      gsap.to(containerRef.current, {
-        borderColor: 'var(--border-default)',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-        duration: 0.3,
-        ease: 'expo.out'
+        ease: 'power2.out'
       });
     }
-  }, [isFocused]);
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleSearch(query);
+  const handleBlur = () => {
+    if (containerRef.current) {
+      gsap.to(containerRef.current, {
+        borderColor: 'var(--color-black)',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl">
+    <div className="relative w-[50vw]">
+      {/* Search container - single thick border rectangle */}
       <div
         ref={containerRef}
-        className="flex items-center bg-white rounded-2xl transition-all overflow-hidden"
+        className="relative border-[3px] border-black bg-white flex items-stretch"
         style={{
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-          height: '56px'
+          willChange: 'border-color',
+          minHeight: '80px'
         }}
       >
-        {/* Engine Switcher */}
-        <SearchEngineSwitcher
-          engines={allEngines}
-          currentEngine={currentEngine}
-          onEngineChange={setCurrentEngine}
-        />
+        {/* Left side - Engine switcher*/}
+        <div className="shrink-0 w-20 h-20 border-r-[3px] border-black flex items-center justify-center bg-gray-50">
+          <SearchEngineSwitcher
+            selectedEngine={selectedEngine}
+            onEngineChange={setSelectedEngine}
+          />
+        </div>
 
-        {/* Search Input */}
+        {/* Middle - Input area */}
         <input
-          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          placeholder="Search the web..."
-          className="flex-1 h-full px-4 outline-none text-base text-gray-900 placeholder-gray-400"
-          style={{
-            fontFamily: 'inherit'
-          }}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder="TYPE YOUR QUERY"
+          className="flex-1 px-8 py-6 text-2xl font-bold bg-transparent border-none outline-none placeholder-[#999999] uppercase tracking-wide"
+          style={{ fontFamily: 'var(--font-oxanium)' }}
         />
 
-        {/* Search Button */}
-        {query && (
-          <button
-            type="submit"
-            className="h-full px-6 text-blue-500 hover:text-blue-600 font-medium transition-colors"
-          >
-            Search
-          </button>
-        )}
+        {/* Right side - Search button (square) */}
+        <button
+          onClick={handleSearch}
+          className="shrink-0 w-20 h-20 bg-[#0066FF] hover:bg-[#0052CC] transition-colors flex items-center justify-center border-l-[3px] border-black"
+          aria-label="Search"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        </button>
       </div>
-    </form>
+    </div>
   );
 }

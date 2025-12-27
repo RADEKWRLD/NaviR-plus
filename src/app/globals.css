@@ -1,47 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  /* Main Background - Light & Clean */
-  --bg-main: #FAFBFC;
-  --bg-secondary: #F0F4F8;
+  /* Core Colors - Black & White */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray-light: #F5F5F5;
+  --color-gray-mid: #999999;
+  --color-gray-dark: #333333;
 
-  /* Floating Tag Colors (Comfortable, Programmer Style) */
-  --tag-blue: #3B82F6;        /* Sky Blue (Functions/Methods) */
-  --tag-purple: #8B5CF6;      /* Purple (Variables/State) */
-  --tag-green: #10B981;       /* Green (Success/Validation) */
-  --tag-orange: #F59E0B;      /* Orange (Warnings/Optimization) */
-  --tag-pink: #EC4899;        /* Pink (Design/Creativity) */
-  --tag-teal: #14B8A6;        /* Teal (Data/Analysis) */
-  --tag-indigo: #6366F1;      /* Indigo (Logic/Architecture) */
+  /* Accent Color - Electric Blue */
+  --color-accent: #0066FF;
+  --color-accent-hover: #0052CC;
 
-  /* Background Geometric Shapes (Light, Subtle) */
-  --shape-light-blue: rgba(59, 130, 246, 0.08);
-  --shape-light-purple: rgba(139, 92, 246, 0.08);
-  --shape-light-green: rgba(16, 185, 129, 0.08);
-  --shape-light-orange: rgba(245, 158, 11, 0.08);
+  /* Background */
+  --bg-main: #FFFFFF;
+  --bg-secondary: #F5F5F5;
 
-  /* UI Elements */
-  --text-primary: #1F2937;
-  --text-secondary: #6B7280;
-  --text-tag: #FFFFFF;
-  --border-default: #E5E7EB;
-  --border-focus: #3B82F6;
-  --surface-white: #FFFFFF;
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #999999;
+
+  /* Borders */
+  --border-default: #000000;
+  --border-thick: 3px;
+  --border-thin: 1px;
 
   /* Legacy variables for compatibility */
   --background: var(--bg-main);
   --foreground: var(--text-primary);
 }
 
-@theme inline {
-  --color-background: var(--bg-main);
-  --color-foreground: var(--text-primary);
-}
-
 body {
   background: var(--bg-main);
   color: var(--text-primary);
-  font-family: var(--font-plaster), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-oxanium), 'Arial', sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -51,4 +44,46 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Typography Scale - Poster Style */
+.text-hero {
+  font-size: clamp(2rem, 8vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.text-large {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+.text-medium {
+  font-size: clamp(1rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+.text-small {
+  font-size: clamp(0.875rem, 2vw, 1.25rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+/* Special Text Effects */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-black);
+  paint-order: stroke fill;
+}
+
+.text-inverted {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 0.1em 0.3em;
+  display: inline-block;
+}
+
+.text-accent {
+  color: var(--color-accent);
 }

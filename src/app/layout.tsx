@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import { TRPCProvider } from "@/lib/trpc/Provider";
 import "./globals.css";
 
-const plaster = localFont({
-  src: "../../public/Plaster-Regular.ttf",
-  variable: "--font-plaster",
+const oxanium = localFont({
+  src: "../../public/Oxanium/Oxanium-VariableFont_wght.ttf",
+  variable: "--font-oxanium",
   display: "swap",
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh">
-      <body className={plaster.variable}>
+      <body className={oxanium.variable}>
         <TRPCProvider>{children}</TRPCProvider>
       </body>
     </html>
