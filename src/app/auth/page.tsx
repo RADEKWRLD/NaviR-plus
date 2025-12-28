@@ -48,8 +48,8 @@ export default function AuthPage() {
         </svg>
       </button>
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-12">
-        <div className="w-full max-w-md">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-12 bg-transparent">
+        <div className="w-full max-w-md bg-transparent">
           <div className="text-center mb-12">
             <h1 className="text-6xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-oxanium)' }}>
               NAVIR
@@ -59,7 +59,7 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <div className=" border-black bg-white">
+          <div className=" border-black bg-transparent">
             <div className="flex border-b-[3px] border-black">
               <button
                 onClick={() => setMode('login')}

@@ -18,7 +18,7 @@ export default function FormInput({
   minLength,
 }: FormInputProps) {
   return (
-    <div>
+    <div className="bg-transparent">
       <label
         className="block mb-2 text-sm font-bold uppercase tracking-wide"
         style={{ fontFamily: 'var(--font-oxanium)' }}

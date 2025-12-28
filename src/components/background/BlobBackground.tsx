@@ -9,14 +9,12 @@ export default function BlobBackground() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 上方 blob 从顶部滑入 (从 y=-405 滑入到 y=0)
       gsap.fromTo(
         topBlobRef.current,
-        { y: -405 },
-        { y: 0, duration: 1.2, ease: 'power2.out', delay: 0.2 }
+        {y: -405 },
+        {y: 0, duration: 1.2, ease: 'power2.out', delay: 0.2 }
       );
 
-      // 下方 blob 从底部滑入 (从 y=405 滑入到 y=0)
       gsap.fromTo(
         bottomBlobRef.current,
         { y: 910 },
@@ -54,7 +52,7 @@ export default function BlobBackground() {
           </linearGradient>
         </defs>
 
-        {/* 上方 blob - 从右上角 */}
+        {/* blob右上角 */}
         <g ref={topBlobRef} transform="translate(960, 0)">
           <path
             d="M0 405C-33.6 366.4 -67.1 327.8 -100.7 310C-134.4 292.3 -168.1 295.3 -210.4 289.6C-252.8 283.9 -303.8 269.4 -327.7 238.1C-351.5 206.7 -348.3 158.4 -356.6 115.9C-365 73.4 -385 36.7 -405 0L0 0Z"
@@ -66,7 +64,7 @@ export default function BlobBackground() {
           />
         </g>
 
-        {/* 下方 blob - 从左下角 */}
+        {/* blob左下角 */}
         <g ref={bottomBlobRef} transform="translate(0, 540)">
           <path
             d="M0 -405C29.3 -359.4 58.6 -313.8 97.3 -299.6C136 -285.4 184.1 -302.7 208.1 -286.4C232 -270.1 231.9 -220.2 262.9 -191C294 -161.9 356.3 -153.5 385.2 -125.2C414.1 -96.8 409.5 -48.4 405 0L0 0Z"
