@@ -12,7 +12,7 @@ const CATEGORIES: Array<{ id: SettingsCategory; label: string; icon: string }> =
   { id: 'appearance', label: 'APPEARANCE', icon: '◐' },
   { id: 'search', label: 'SEARCH', icon: '⌕' },
   { id: 'bookmarks', label: 'BOOKMARKS', icon: '★' },
-  { id: 'account', label: 'ACCOUNT', icon: '⚙' },
+  { id: 'account', label: 'ACCOUNT', icon: '⚙' }, 
   { id: 'data', label: 'DATA', icon: '⬡' },
 ];
 

@@ -71,7 +71,7 @@ export default function SettingsContent({
       </div>
 
       {/* Content area */}
-      <div ref={contentRef} className="flex-1 p-4 md:p-6 overflow-y-auto">
+      <div ref={contentRef} className="flex-1 p-4 md:p-6 overflow-y-auto scrollbar-hide">
         {renderSection()}
       </div>
     </div>

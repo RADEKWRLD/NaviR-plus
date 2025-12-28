@@ -36,21 +36,34 @@ export default function Home() {
       setShowBookmarkModal(true);
     };
 
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      // 排除交互元素的点击
-      if (!target.closest('button, a, input, [role="button"], .bookmark-modal')) {
-        setShowBookmarkModal(true);
-      }
-    };
-
     window.addEventListener('contextmenu', handleContextMenu);
-    if (isMobile) {
-      window.addEventListener('click', handleClick);
-    }
 
     return () => {
       window.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
+  // 移动端单击：点击背景打开/关闭书签栏
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // 排除交互元素的点击
+      if (target.closest('button, a, input, [role="button"]')) {
+        return;
+      }
+      // 点击模态框内部不处理（模态框自己处理关闭）
+      if (target.closest('.bookmark-modal')) {
+        return;
+      }
+      // 切换模态框状态
+      setShowBookmarkModal(prev => !prev);
+    };
+
+    window.addEventListener('click', handleClick);
+
+    return () => {
       window.removeEventListener('click', handleClick);
     };
   }, [isMobile]);

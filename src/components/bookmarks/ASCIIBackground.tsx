@@ -1,23 +1,38 @@
 'use client';
 
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { gsap } from '@/lib/gsap/config';
 
 export default function ASCIIBackground() {
   const rowsRef = useRef<HTMLDivElement[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // 移动端不启用动画，优化性能
+    if (isMobile) return;
+
     // 为每一行添加不同速度的滚动动画
-    rowsRef.current.forEach((row, index) => {
+    const animations = rowsRef.current.map((row, index) => {
       const speed = 15 + (index % 5) * 3; // 不同行不同速度 15-27秒
-      gsap.to(row, {
+      return gsap.to(row, {
         x: '-=200',
         duration: speed,
         ease: 'none',
         repeat: -1,
       });
     });
-  }, []);
+
+    return () => {
+      animations.forEach(anim => anim.kill());
+    };
+  }, [isMobile]);
 
   const grid = useMemo(() => {
     const chars = ['/', '\\', '|', '-', '_', '+', '=', '*', '#', '.', '~', '^', '<', '>'];
