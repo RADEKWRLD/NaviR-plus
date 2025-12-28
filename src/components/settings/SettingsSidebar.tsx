@@ -23,19 +23,19 @@ export default function SettingsSidebar({
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="w-64 border-r-[3px] border-(--border-default) flex flex-col">
-      {/* Header */}
-      <div className="p-6 border-b-[3px] border-(--border-default)">
+    <div className="w-full md:w-56 shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] border-(--border-default) flex flex-col">
+      {/* Header - hidden on mobile */}
+      <div className="hidden md:block p-4 border-b-[3px] border-(--border-default)">
         <h2
-          className="text-2xl font-bold uppercase tracking-wider text-(--text-primary)"
+          className="text-xl font-bold uppercase tracking-wider text-(--text-primary)"
           style={{ fontFamily: 'var(--font-oxanium)' }}
         >
           Settings
         </h2>
       </div>
 
-      {/* Navigation items */}
-      <nav className="flex-1 py-4">
+      {/* Navigation items - horizontal scroll on mobile, vertical on desktop */}
+      <nav className="flex md:flex-col md:flex-1 md:py-2 overflow-x-auto md:overflow-x-visible">
         {CATEGORIES.map((category) => {
           // 仅登录用户显示 Account
           if (category.id === 'account' && !isAuthenticated) {
@@ -49,19 +49,19 @@ export default function SettingsSidebar({
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
               className={`
-                w-full px-6 py-4 flex items-center gap-4
-                text-left font-bold uppercase tracking-wide
-                transition-all duration-200
+                shrink-0 px-4 py-3 md:px-4 md:py-3 flex items-center gap-2 md:gap-3
+                font-bold uppercase tracking-wide text-sm md:text-base
+                transition-all duration-200 md:w-full md:text-left
                 ${
                   isActive
-                    ? 'bg-(--color-accent) text-(--color-white) border-l-4 border-(--color-accent)'
-                    : 'text-(--text-primary) hover:bg-(--color-gray-light) border-l-4 border-transparent'
+                    ? 'bg-(--color-accent) text-(--color-white) md:border-l-4 md:border-(--color-accent)'
+                    : 'text-(--text-primary) hover:bg-(--color-gray-light) md:border-l-4 md:border-transparent'
                 }
               `}
               style={{ fontFamily: 'var(--font-oxanium)' }}
             >
-              <span className="text-xl w-6 text-center">{category.icon}</span>
-              <span>{category.label}</span>
+              <span className="text-lg md:text-xl w-5 md:w-6 text-center">{category.icon}</span>
+              <span className="whitespace-nowrap">{category.label}</span>
             </button>
           );
         })}

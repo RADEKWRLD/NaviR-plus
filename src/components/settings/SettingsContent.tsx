@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "@/lib/gsap/config";
 import type { SettingsCategory } from "@/types/settings";
 import AppearanceSection from "./sections/AppearanceSection";
@@ -19,6 +19,14 @@ export default function SettingsContent({
   onClose,
 }: SettingsContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -49,20 +57,21 @@ export default function SettingsContent({
 
   return (
     <div
-    style={{paddingLeft:"1rem"}} 
-    className="flex-1 flex flex-col relative bg-(--bg-main)">
+      className="flex-1 flex flex-col relative bg-(--bg-main) min-h-0"
+      style={{ paddingLeft: isDesktop ? '1rem' : '0' }}
+    >
       {/* Close button */}
       <div className="absolute top-0 right-0 z-10">
         <button
           onClick={onClose}
-          className="w-10 h-10 border-[3px] border-(--border-default) bg-(--bg-main) hover:bg-[#FF6B35] hover:text-white hover:border-[#FF6B35] flex items-center justify-center transition-colors rounded-full text-2xl font-bold text-(--text-primary)"
+          className="w-8 h-8 md:w-10 md:h-10 border-[2px] md:border-[3px] border-(--border-default) bg-(--bg-main) hover:bg-[#FF6B35] hover:text-white hover:border-[#FF6B35] flex items-center justify-center transition-colors rounded-full text-xl md:text-2xl font-bold text-(--text-primary)"
         >
           ×
         </button>
       </div>
 
       {/* Content area */}
-      <div ref={contentRef} className="flex-1 p-8 overflow-y-auto">
+      <div ref={contentRef} className="flex-1 p-4 md:p-6 overflow-y-auto">
         {renderSection()}
       </div>
     </div>
