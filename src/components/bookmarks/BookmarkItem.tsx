@@ -82,7 +82,7 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
   const getFaviconUrl = (url: string) => {
     try {
       const hostname = new URL(url).hostname;
-      return `https://api.iowen.cn/favicon/${hostname}.png`;
+      return `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
     } catch {
       return '';
     }
