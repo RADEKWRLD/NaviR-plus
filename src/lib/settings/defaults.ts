@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: Settings = {
     theme: 'light',
     backgroundEffect: 'blob',
     clockFormat: '24h',
+    enableBlur: false,
   },
   search: {
     defaultEngine: 'google',

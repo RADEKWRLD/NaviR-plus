@@ -34,20 +34,27 @@ export default function ASCIIBackground() {
     };
   }, [isMobile]);
 
+  // 移动端减少渲染的字符数量
   const grid = useMemo(() => {
     const chars = ['/', '\\', '|', '-', '_', '+', '=', '*', '#', '.', '~', '^', '<', '>'];
 
-    // 根据视口大小动态计算行列数
-    const rows = Math.ceil(window.innerHeight / 30);
-    const cols = Math.ceil(window.innerWidth / 10);
+    // 移动端使用更少的行列数
+    const isMobileSize = typeof window !== 'undefined' && window.innerWidth < 768;
+    const rowCount = isMobileSize ? 8 : Math.ceil(window.innerHeight / 30);
+    const colCount = isMobileSize ? 20 : Math.ceil(window.innerWidth / 10);
 
-    return Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => ({
+    return Array.from({ length: rowCount }, () =>
+      Array.from({ length: colCount }, () => ({
         char: chars[Math.floor(Math.random() * chars.length)],
         isHighlight: Math.random() < 0.12,
       }))
     );
   }, []);
+
+  // 移动端完全不渲染 ASCII 背景
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">

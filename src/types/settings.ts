@@ -29,6 +29,7 @@ export interface AppearanceSettings {
   theme: Theme;
   backgroundEffect: BackgroundEffect;
   clockFormat: ClockFormat;
+  enableBlur: boolean;
 }
 
 // 搜索设置

@@ -2,6 +2,7 @@
 
 import { useSettings } from "@/context/SettingsContext";
 import SettingsSelect from "../controls/SettingsSelect";
+import SettingsToggle from "../controls/SettingsToggle";
 import type { Theme, BackgroundEffect, ClockFormat } from "@/types/settings";
 
 const THEME_OPTIONS: Array<{ value: Theme; label: string }> = [
@@ -83,6 +84,25 @@ export default function AppearanceSection() {
             onChange={(value) =>
               updateAppearance({ clockFormat: value as ClockFormat })
             }
+          />
+        </div>
+
+        {/* Enable Blur */}
+        <div className="flex items-center justify-between">
+          <div>
+            <label
+              className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+              style={{ fontFamily: "var(--font-oxanium)" }}
+            >
+              Blur Effect
+            </label>
+            <p className="text-xs text-(--text-muted) mt-1">
+              Enable backdrop blur (may affect performance on mobile)
+            </p>
+          </div>
+          <SettingsToggle
+            checked={settings.appearance.enableBlur}
+            onChange={(checked) => updateAppearance({ enableBlur: checked })}
           />
         </div>
       </div>
