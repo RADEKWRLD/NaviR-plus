@@ -7,11 +7,13 @@ import { gsap } from "@/lib/gsap/config";
 import { useAuth } from "@/context/AuthContext";
 import UserIcon from "@/components/icons/UserIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
+import SettingsModal from "@/components/settings/SettingsModal";
 
 export default function HeaderIcons() {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -87,9 +89,18 @@ export default function HeaderIcons() {
       </div>
 
       {/* Settings icon square */}
-      <div className="w-12 h-12 border-[3px] border-black bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer rounded-4xl">
+      <button
+        onClick={() => setShowSettings(true)}
+        className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl"
+      >
         <SettingsIcon />
-      </div>
+      </button>
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </div>
   );
 }

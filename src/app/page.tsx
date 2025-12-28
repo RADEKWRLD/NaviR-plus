@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import GraphicBackground from '@/components/background/GraphicBackground';
+import BlobBackground from '@/components/background/BlobBackground';
 import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
 import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
 import SearchInput from '@/components/search/SearchInput';
 import HeaderIcons from '@/components/header/HeaderIcons';
 import BookmarkModal from '@/components/bookmarks/BookmarkModal';
+import { useSettings } from '@/context/SettingsContext';
 
 export default function Home() {
   const [showBookmarkModal, setShowBookmarkModal] = useState(false);
+  const { settings } = useSettings();
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -24,8 +27,9 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent">
-      {/* Background grid/geometric elements */}
+      {/* Background effects based on settings */}
       <GraphicBackground />
+      {settings.appearance.backgroundEffect === 'blob' && <BlobBackground />}
 
       {/* GSAP animated typography layer */}
       <AnimatedTypographyLayer />

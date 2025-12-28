@@ -4,10 +4,17 @@ import { useState, useRef } from 'react';
 import { gsap } from '@/lib/gsap/config';
 import SearchEngineSwitcher from './SearchEngineSwitcher';
 import { SEARCH_ENGINES } from '@/lib/constants/searchEngines';
+import { useSettings } from '@/context/SettingsContext';
 
 export default function SearchInput() {
+  const { settings } = useSettings();
   const [query, setQuery] = useState('');
-  const [selectedEngine, setSelectedEngine] = useState(SEARCH_ENGINES[0]);
+  const [selectedEngine, setSelectedEngine] = useState(() => {
+    const defaultEngine = SEARCH_ENGINES.find(
+      (e) => e.id === settings.search.defaultEngine
+    );
+    return defaultEngine || SEARCH_ENGINES[0];
+  });
   const [isFocused, setIsFocused] = useState(false);
   const leftBracketRef = useRef<HTMLDivElement>(null);
   const rightBracketRef = useRef<HTMLDivElement>(null);
@@ -15,7 +22,11 @@ export default function SearchInput() {
   const handleSearch = () => {
     if (!query.trim()) return;
     const searchUrl = selectedEngine.searchUrl.replace('{query}', encodeURIComponent(query));
-    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    if (settings.search.openInNewTab) {
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = searchUrl;
+    }
   };
 
   const handleFocus = () => {

@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Bookmark } from '@/types/bookmark';
 import { useBookmarks } from '@/context/BookmarkContext';
+import { useSettings } from '@/context/SettingsContext';
 import BookmarkContextMenu from './BookmarkContextMenu';
 
 interface BookmarkItemProps {
@@ -13,6 +14,7 @@ interface BookmarkItemProps {
 
 export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkItemProps) {
   const { deleteBookmark } = useBookmarks();
+  const { settings } = useSettings();
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const itemRef = useRef<HTMLDivElement>(null);
 
@@ -80,12 +82,14 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
           }}
         />
 
-        <span
-          className="mt-2 text-xs font-bold text-center truncate w-full px-2 pointer-events-none"
-          style={{ fontFamily: 'var(--font-oxanium)' }}
-        >
-          {bookmark.title}
-        </span>
+        {settings.bookmarks.showTitle && (
+          <span
+            className="mt-2 text-xs font-bold text-center truncate w-full px-2 pointer-events-none"
+            style={{ fontFamily: 'var(--font-oxanium)' }}
+          >
+            {bookmark.title}
+          </span>
+        )}
       </div>
 
       {contextMenu && (

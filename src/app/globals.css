@@ -87,3 +87,35 @@ body {
 .text-accent {
   color: var(--color-accent);
 }
+
+/* Dark Mode */
+.dark {
+  --color-black: #ffffff;
+  --color-white: #1a1a1a;
+  --color-gray-light: #2a2a2a;
+  --color-gray-mid: #888888;
+  --color-gray-dark: #cccccc;
+
+  --bg-main: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
+
+  --border-default: #ffffff;
+}
+
+.dark body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+.dark .text-outline {
+  -webkit-text-stroke-color: var(--color-white);
+}
+
+.dark .text-inverted {
+  background: var(--color-white);
+  color: var(--color-black);
+}

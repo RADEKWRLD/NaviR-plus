@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 export const userRouter = router({
   // 根据 ID 查询
   getById: publicProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string().uuid() }))
     .query(async ({ input }) => {
       const result = await db.select().from(users).where(eq(users.id, input.id));
       return result[0] ?? null;
@@ -27,7 +27,7 @@ export const userRouter = router({
   // 更新用户
   update: publicProcedure
     .input(z.object({
-      id: z.number(),
+      id: z.string().uuid(),
       name: z.string().optional(),
       email: z.string().email().optional(),
       password: z.string().optional(),
@@ -39,7 +39,7 @@ export const userRouter = router({
 
   // 删除用户
   delete: publicProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ input }) => {
       return db.delete(users).where(eq(users.id, input.id)).returning();
     }),
