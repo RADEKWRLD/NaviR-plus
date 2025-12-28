@@ -23,7 +23,7 @@ export default function SortableBookmarkItem({ bookmark }: SortableBookmarkItemP
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1000 : 1,
+    zIndex: isDragging ? 100 : 'auto',
   };
 
   return (

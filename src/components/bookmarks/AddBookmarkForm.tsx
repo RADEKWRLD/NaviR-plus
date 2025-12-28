@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { useBookmarks } from "@/context/BookmarkContext";
+import { Bookmark } from "@/types/bookmark";
 
-interface AddBookmarkFormProps {
+interface BookmarkFormProps {
   onClose: () => void;
+  editBookmark?: Bookmark;
 }
 
-export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
-  const { addBookmark } = useBookmarks();
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProps) {
+  const { addBookmark, updateBookmark } = useBookmarks();
+  const [title, setTitle] = useState(editBookmark?.title || "");
+  const [url, setUrl] = useState(editBookmark?.url || "");
+  const isEditMode = !!editBookmark;
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
 
   const fetchSiteTitle = async (inputUrl: string) => {
@@ -53,14 +56,19 @@ export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (title && url) {
-      addBookmark({ title, url });
+      if (isEditMode && editBookmark) {
+        updateBookmark(editBookmark.id, { title, url });
+      } else {
+        addBookmark({ title, url });
+      }
       onClose();
     }
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black/10 backdrop-blur-md z-60 flex items-center justify-center"
+      className="fixed inset-0 bg-black/10 backdrop-blur-md flex items-center justify-center"
+      style={{ zIndex: 1000 }}
       onClick={onClose}
     >
       <div
@@ -72,7 +80,7 @@ export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
           className="text-2xl font-bold mb-8 uppercase"
           style={{ fontFamily: "var(--font-oxanium)" }}
         >
-          Add Bookmark
+          {isEditMode ? "Edit Bookmark" : "Add Bookmark"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -125,7 +133,7 @@ export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
                 className="flex-1 h-10 py-3 px-6 bg-[#FF6B35] hover:bg-[#E85A2B] text-white font-bold uppercase border-[3px] border-black transition-colors"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
-                Add
+                {isEditMode ? "Save" : "Add"}
               </button>
               <button
                 type="button"

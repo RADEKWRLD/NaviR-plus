@@ -6,6 +6,7 @@ import { Bookmark } from '@/types/bookmark';
 interface BookmarkContextType {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => void;
+  updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => void;
   deleteBookmark: (id: string) => void;
   reorderBookmarks: (activeId: string, overId: string) => void;
 }
@@ -59,22 +60,22 @@ const DEFAULT_BOOKMARKS: Bookmark[] = [
   },
 ];
 
-export function BookmarkProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+function getInitialBookmarks(): Bookmark[] {
+  if (typeof window === 'undefined') return DEFAULT_BOOKMARKS;
 
-  // 从 localStorage 加载数据
-  useEffect(() => {
-    const saved = localStorage.getItem(BOOKMARKS_KEY);
-    if (saved) {
-      try {
-        setBookmarks(JSON.parse(saved));
-      } catch {
-        setBookmarks(DEFAULT_BOOKMARKS);
-      }
-    } else {
-      setBookmarks(DEFAULT_BOOKMARKS);
+  const saved = localStorage.getItem(BOOKMARKS_KEY);
+  if (saved) {
+    try {
+      return JSON.parse(saved) as Bookmark[];
+    } catch {
+      return DEFAULT_BOOKMARKS;
     }
-  }, []);
+  }
+  return DEFAULT_BOOKMARKS;
+}
+
+export function BookmarkProvider({ children }: { children: ReactNode }) {
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(getInitialBookmarks);
 
   // 保存到 localStorage
   useEffect(() => {
@@ -89,6 +90,12 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString(),
     };
     setBookmarks(prev => [...prev, newBookmark]);
+  };
+
+  const updateBookmark = (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => {
+    setBookmarks(prev => prev.map(b =>
+      b.id === id ? { ...b, ...data } : b
+    ));
   };
 
   const deleteBookmark = (id: string) => {
@@ -114,7 +121,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <BookmarkContext.Provider value={{ bookmarks, addBookmark, deleteBookmark, reorderBookmarks }}>
+    <BookmarkContext.Provider value={{ bookmarks, addBookmark, updateBookmark, deleteBookmark, reorderBookmarks }}>
       {children}
     </BookmarkContext.Provider>
   );
