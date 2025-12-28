@@ -54,7 +54,7 @@ export default function SettingsSidebar({
                 transition-all duration-200
                 ${
                   isActive
-                    ? 'bg-[#FF6B35] text-white border-l-4 border-(--border-default)'
+                    ? 'bg-(--color-accent) text-(--color-white) border-l-4 border-(--color-accent)'
                     : 'text-(--text-primary) hover:bg-(--color-gray-light) border-l-4 border-transparent'
                 }
               `}
