@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import GraphicBackground from '@/components/background/GraphicBackground';
 import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
+import BlobBackground from '@/components/background/BlobBackground';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
 
@@ -23,6 +24,7 @@ export default function AuthPage() {
     <main className="relative min-h-screen overflow-hidden bg-white">
       <GraphicBackground />
       <AnimatedTypographyLayer />
+      <BlobBackground />
 
       {/* Back Arrow Button */}
       <button
