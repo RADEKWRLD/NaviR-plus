@@ -6,8 +6,10 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   ReactNode,
 } from 'react';
+import { useSession } from 'next-auth/react';
 import type {
   Settings,
   AppearanceSettings,
@@ -18,6 +20,7 @@ import type {
   ColorScheme,
 } from '@/types/settings';
 import { DEFAULT_SETTINGS, SETTINGS_STORAGE_KEY } from '@/lib/settings/defaults';
+import { trpc } from '@/lib/trpc/client';
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
@@ -65,10 +68,21 @@ function applyColorScheme(scheme: ColorScheme) {
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState(true);
+  const hasSyncedRef = useRef(false);
 
-  // 初始化加载设置
+  // tRPC
+  const saveMutation = trpc.settings.save.useMutation();
+  const { refetch: refetchSettings } = trpc.settings.get.useQuery(undefined, {
+    enabled: false, // 手动触发
+  });
+
+  // 判断是否已登录
+  const isAuthenticated = status === 'authenticated' && !!session?.user;
+
+  // 初始化加载设置 (从 localStorage)
   useEffect(() => {
     const stored = getStoredSettings();
     setSettings(stored);
@@ -76,6 +90,41 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     applyColorScheme(stored.appearance.colorScheme);
     setIsLoading(false);
   }, []);
+
+  // 登录时同步: 从云端拉取数据 (云端优先)
+  useEffect(() => {
+    if (isAuthenticated && !hasSyncedRef.current && !isLoading) {
+      const syncOnLogin = async () => {
+        hasSyncedRef.current = true;
+
+        try {
+          const result = await refetchSettings();
+          if (result.data) {
+            // 云端有数据，使用云端数据覆盖本地
+            setSettings(result.data);
+            saveSettings(result.data);
+            applyTheme(result.data.appearance.theme);
+            applyColorScheme(result.data.appearance.colorScheme);
+          } else {
+            // 云端没有数据，将本地数据上传到云端
+            const localSettings = getStoredSettings();
+            await saveMutation.mutateAsync(localSettings);
+          }
+        } catch (error) {
+          console.error('Settings sync on login failed:', error);
+        }
+      };
+
+      syncOnLogin();
+    }
+  }, [isAuthenticated, isLoading, refetchSettings, saveMutation]);
+
+  // 登出时重置同步状态
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      hasSyncedRef.current = false;
+    }
+  }, [status]);
 
   // 监听系统主题变化
   useEffect(() => {
@@ -87,56 +136,83 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }, [settings.appearance.theme]);
 
-  const updateAppearance = useCallback((updates: Partial<AppearanceSettings>) => {
-    setSettings((prev) => {
-      const newSettings = {
-        ...prev,
-        appearance: { ...prev.appearance, ...updates },
-      };
-      saveSettings(newSettings);
-
-      // 如果更新了主题，立即应用
-      if (updates.theme) {
-        applyTheme(updates.theme);
+  // 同步设置到云端的辅助函数
+  const syncToCloud = useCallback(
+    (newSettings: Settings) => {
+      if (isAuthenticated) {
+        saveMutation.mutate(newSettings, {
+          onError: (error) => {
+            console.error('Failed to sync settings:', error);
+          },
+        });
       }
+    },
+    [isAuthenticated, saveMutation]
+  );
 
-      // 如果更新了配色，立即应用
-      if (updates.colorScheme) {
-        applyColorScheme(updates.colorScheme);
-      }
+  const updateAppearance = useCallback(
+    (updates: Partial<AppearanceSettings>) => {
+      setSettings((prev) => {
+        const newSettings = {
+          ...prev,
+          appearance: { ...prev.appearance, ...updates },
+        };
+        saveSettings(newSettings);
+        syncToCloud(newSettings);
 
-      return newSettings;
-    });
-  }, []);
+        // 如果更新了主题，立即应用
+        if (updates.theme) {
+          applyTheme(updates.theme);
+        }
 
-  const updateSearch = useCallback((updates: Partial<SearchSettings>) => {
-    setSettings((prev) => {
-      const newSettings = {
-        ...prev,
-        search: { ...prev.search, ...updates },
-      };
-      saveSettings(newSettings);
-      return newSettings;
-    });
-  }, []);
+        // 如果更新了配色，立即应用
+        if (updates.colorScheme) {
+          applyColorScheme(updates.colorScheme);
+        }
 
-  const updateBookmarks = useCallback((updates: Partial<BookmarkSettings>) => {
-    setSettings((prev) => {
-      const newSettings = {
-        ...prev,
-        bookmarks: { ...prev.bookmarks, ...updates },
-      };
-      saveSettings(newSettings);
-      return newSettings;
-    });
-  }, []);
+        return newSettings;
+      });
+    },
+    [syncToCloud]
+  );
+
+  const updateSearch = useCallback(
+    (updates: Partial<SearchSettings>) => {
+      setSettings((prev) => {
+        const newSettings = {
+          ...prev,
+          search: { ...prev.search, ...updates },
+        };
+        saveSettings(newSettings);
+        syncToCloud(newSettings);
+        return newSettings;
+      });
+    },
+    [syncToCloud]
+  );
+
+  const updateBookmarks = useCallback(
+    (updates: Partial<BookmarkSettings>) => {
+      setSettings((prev) => {
+        const newSettings = {
+          ...prev,
+          bookmarks: { ...prev.bookmarks, ...updates },
+        };
+        saveSettings(newSettings);
+        syncToCloud(newSettings);
+        return newSettings;
+      });
+    },
+    [syncToCloud]
+  );
 
   const resetSettings = useCallback(() => {
     setSettings(DEFAULT_SETTINGS);
     saveSettings(DEFAULT_SETTINGS);
     applyTheme(DEFAULT_SETTINGS.appearance.theme);
     applyColorScheme(DEFAULT_SETTINGS.appearance.colorScheme);
-  }, []);
+    syncToCloud(DEFAULT_SETTINGS);
+  }, [syncToCloud]);
 
   return (
     <SettingsContext.Provider
