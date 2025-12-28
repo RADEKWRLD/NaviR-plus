@@ -76,7 +76,7 @@ export default function BookmarkGrid() {
       <div className="w-full h-full flex items-center justify-center p-8">
         <div className="max-h-full overflow-y-auto" style={{ padding: '16px' }}>
           <SortableContext items={bookmarkIds} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-5 gap-30">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 lg:gap-16">
               {sortedBookmarks.map((bookmark) => (
                 <SortableBookmarkItem key={bookmark.id} bookmark={bookmark} />
               ))}
