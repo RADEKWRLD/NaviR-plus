@@ -18,7 +18,7 @@ export default function BlobBackground() {
       gsap.fromTo(
         bottomBlobRef.current,
         { y: 910 },
-        { y: 505, duration: 1, ease: 'power2.out', delay: 0.4 }
+        { y: 540, duration: 1, ease: 'power2.out', delay: 0.4 }
       );
     });
 

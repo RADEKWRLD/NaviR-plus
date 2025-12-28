@@ -45,7 +45,7 @@ export default function HeaderIcons() {
       <div className="relative">
         <button
           onClick={handleUserClick}
-          className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl"
+          className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl text-(--text-primary)"
         >
           <UserIcon />
         </button>
@@ -91,7 +91,7 @@ export default function HeaderIcons() {
       {/* Settings icon square */}
       <button
         onClick={() => setShowSettings(true)}
-        className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl"
+        className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl text-(--text-primary)"
       >
         <SettingsIcon />
       </button>
