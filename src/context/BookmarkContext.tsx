@@ -1,7 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import { useSession } from 'next-auth/react';
 import { Bookmark } from '@/types/bookmark';
+import { trpc } from '@/lib/trpc/client';
 
 interface BookmarkContextType {
   bookmarks: Bookmark[];
@@ -9,6 +11,8 @@ interface BookmarkContextType {
   updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => void;
   deleteBookmark: (id: string) => void;
   reorderBookmarks: (activeId: string, overId: string) => void;
+  isSyncing: boolean;
+  syncError: string | null;
 }
 
 const BookmarkContext = createContext<BookmarkContextType | undefined>(undefined);
@@ -60,7 +64,7 @@ const DEFAULT_BOOKMARKS: Bookmark[] = [
   },
 ];
 
-function getInitialBookmarks(): Bookmark[] {
+function getLocalBookmarks(): Bookmark[] {
   if (typeof window === 'undefined') return DEFAULT_BOOKMARKS;
 
   const saved = localStorage.getItem(BOOKMARKS_KEY);
@@ -74,54 +78,216 @@ function getInitialBookmarks(): Bookmark[] {
   return DEFAULT_BOOKMARKS;
 }
 
-export function BookmarkProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>(getInitialBookmarks);
+function saveLocalBookmarks(bookmarks: Bookmark[]) {
+  localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
+}
 
-  // 保存到 localStorage
+export function BookmarkProvider({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(getLocalBookmarks);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const hasSyncedRef = useRef(false);
+
+  // tRPC mutations
+  const syncAllMutation = trpc.bookmark.syncAll.useMutation();
+  const createMutation = trpc.bookmark.create.useMutation();
+  const updateMutation = trpc.bookmark.update.useMutation();
+  const deleteMutation = trpc.bookmark.delete.useMutation();
+  const reorderMutation = trpc.bookmark.reorder.useMutation();
+
+  // tRPC query for fetching bookmarks
+  const { refetch: refetchBookmarks } = trpc.bookmark.list.useQuery(undefined, {
+    enabled: false, // 手动触发
+  });
+
+  // 判断是否已登录
+  const isAuthenticated = status === 'authenticated' && !!session?.user;
+
+  // 登录时同步: 从云端拉取数据
   useEffect(() => {
-    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
+    if (isAuthenticated && !hasSyncedRef.current) {
+      const syncOnLogin = async () => {
+        setIsSyncing(true);
+        setSyncError(null);
+        hasSyncedRef.current = true;
+
+        try {
+          // 从云端获取书签数据
+          const result = await refetchBookmarks();
+          if (result.data && result.data.length > 0) {
+            // 云端有数据，使用云端数据
+            setBookmarks(result.data);
+            saveLocalBookmarks(result.data);
+          } else {
+            // 云端没有数据，将本地数据上传到云端
+            const localBookmarks = getLocalBookmarks();
+            if (localBookmarks.length > 0) {
+              await syncAllMutation.mutateAsync(
+                localBookmarks.map((b) => ({
+                  clientId: b.id,
+                  title: b.title,
+                  url: b.url,
+                  position: b.position,
+                  createdAt: b.createdAt,
+                }))
+              );
+            }
+          }
+        } catch (error) {
+          console.error('Sync on login failed:', error);
+          setSyncError('同步失败，将使用本地数据');
+        } finally {
+          setIsSyncing(false);
+        }
+      };
+
+      syncOnLogin();
+    }
+  }, [isAuthenticated, refetchBookmarks, syncAllMutation]);
+
+  // 登出时重置同步状态
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      hasSyncedRef.current = false;
+    }
+  }, [status]);
+
+  // 保存到 localStorage (每次书签变化)
+  useEffect(() => {
+    saveLocalBookmarks(bookmarks);
   }, [bookmarks]);
 
-  const addBookmark = (data: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => {
-    const newBookmark: Bookmark = {
-      ...data,
-      id: `bm-${Date.now()}`,
-      position: bookmarks.length,
-      createdAt: new Date().toISOString(),
-    };
-    setBookmarks(prev => [...prev, newBookmark]);
-  };
+  // 添加书签
+  const addBookmark = useCallback(
+    (data: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => {
+      const newBookmark: Bookmark = {
+        ...data,
+        id: `bm-${Date.now()}`,
+        position: bookmarks.length,
+        createdAt: new Date().toISOString(),
+      };
 
-  const updateBookmark = (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => {
-    setBookmarks(prev => prev.map(b =>
-      b.id === id ? { ...b, ...data } : b
-    ));
-  };
+      // 立即更新本地状态
+      setBookmarks((prev) => [...prev, newBookmark]);
 
-  const deleteBookmark = (id: string) => {
-    setBookmarks(prev => prev.filter(b => b.id !== id));
-  };
+      // 如果已登录，同步到云端
+      if (isAuthenticated) {
+        createMutation.mutate(
+          {
+            clientId: newBookmark.id,
+            title: newBookmark.title,
+            url: newBookmark.url,
+            position: newBookmark.position,
+            createdAt: newBookmark.createdAt,
+          },
+          {
+            onError: (error) => {
+              console.error('Failed to sync new bookmark:', error);
+              setSyncError('添加书签同步失败');
+            },
+          }
+        );
+      }
+    },
+    [bookmarks.length, isAuthenticated, createMutation]
+  );
 
-  const reorderBookmarks = (activeId: string, overId: string) => {
-    setBookmarks((prev) => {
-      const oldIndex = prev.findIndex((b) => b.id === activeId);
-      const newIndex = prev.findIndex((b) => b.id === overId);
+  // 更新书签
+  const updateBookmark = useCallback(
+    (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => {
+      setBookmarks((prev) => prev.map((b) => (b.id === id ? { ...b, ...data } : b)));
 
-      if (oldIndex === -1 || newIndex === -1) return prev;
+      if (isAuthenticated) {
+        updateMutation.mutate(
+          {
+            clientId: id,
+            ...data,
+          },
+          {
+            onError: (error) => {
+              console.error('Failed to sync bookmark update:', error);
+              setSyncError('更新书签同步失败');
+            },
+          }
+        );
+      }
+    },
+    [isAuthenticated, updateMutation]
+  );
 
-      const newBookmarks = [...prev];
-      const [movedItem] = newBookmarks.splice(oldIndex, 1);
-      newBookmarks.splice(newIndex, 0, movedItem);
+  // 删除书签
+  const deleteBookmark = useCallback(
+    (id: string) => {
+      setBookmarks((prev) => prev.filter((b) => b.id !== id));
 
-      return newBookmarks.map((bookmark, index) => ({
-        ...bookmark,
-        position: index,
-      }));
-    });
-  };
+      if (isAuthenticated) {
+        deleteMutation.mutate(
+          { clientId: id },
+          {
+            onError: (error) => {
+              console.error('Failed to sync bookmark deletion:', error);
+              setSyncError('删除书签同步失败');
+            },
+          }
+        );
+      }
+    },
+    [isAuthenticated, deleteMutation]
+  );
+
+  // 重新排序书签
+  const reorderBookmarks = useCallback(
+    (activeId: string, overId: string) => {
+      setBookmarks((prev) => {
+        const oldIndex = prev.findIndex((b) => b.id === activeId);
+        const newIndex = prev.findIndex((b) => b.id === overId);
+
+        if (oldIndex === -1 || newIndex === -1) return prev;
+
+        const newBookmarks = [...prev];
+        const [movedItem] = newBookmarks.splice(oldIndex, 1);
+        newBookmarks.splice(newIndex, 0, movedItem);
+
+        const reorderedBookmarks = newBookmarks.map((bookmark, index) => ({
+          ...bookmark,
+          position: index,
+        }));
+
+        // 如果已登录，同步到云端
+        if (isAuthenticated) {
+          reorderMutation.mutate(
+            reorderedBookmarks.map((b) => ({
+              clientId: b.id,
+              position: b.position,
+            })),
+            {
+              onError: (error) => {
+                console.error('Failed to sync bookmark reorder:', error);
+                setSyncError('排序同步失败');
+              },
+            }
+          );
+        }
+
+        return reorderedBookmarks;
+      });
+    },
+    [isAuthenticated, reorderMutation]
+  );
 
   return (
-    <BookmarkContext.Provider value={{ bookmarks, addBookmark, updateBookmark, deleteBookmark, reorderBookmarks }}>
+    <BookmarkContext.Provider
+      value={{
+        bookmarks,
+        addBookmark,
+        updateBookmark,
+        deleteBookmark,
+        reorderBookmarks,
+        isSyncing,
+        syncError,
+      }}
+    >
       {children}
     </BookmarkContext.Provider>
   );

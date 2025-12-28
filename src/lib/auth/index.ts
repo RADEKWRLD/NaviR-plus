@@ -1,3 +1,4 @@
+import NextAuth from 'next-auth';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { db } from '@/db';
@@ -5,13 +6,13 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword } from './passwordUtils';
 
-export const authOptions: NextAuthConfig = {
+const authConfig: NextAuthConfig = {
   providers: [
     Credentials({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const email = credentials?.email as string | undefined;
@@ -21,9 +22,7 @@ export const authOptions: NextAuthConfig = {
           throw new Error('Please provide email and password');
         }
 
-        const userList = await db.select()
-          .from(users)
-          .where(eq(users.email, email));
+        const userList = await db.select().from(users).where(eq(users.email, email));
 
         const user = userList[0];
 
@@ -31,22 +30,19 @@ export const authOptions: NextAuthConfig = {
           throw new Error('Invalid email or password');
         }
 
-        const isValid = await verifyPassword(
-          password,
-          user.password
-        );
+        const isValid = await verifyPassword(password, user.password);
 
         if (!isValid) {
           throw new Error('Invalid email or password');
         }
 
         return {
-          id: user.id.toString(),
+          id: user.id,
           name: user.name,
           email: user.email,
         };
-      }
-    })
+      },
+    }),
   ],
 
   pages: {
@@ -70,7 +66,7 @@ export const authOptions: NextAuthConfig = {
         session.user.email = token.email as string;
       }
       return session;
-    }
+    },
   },
 
   session: {
@@ -80,3 +76,5 @@ export const authOptions: NextAuthConfig = {
 
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export const { auth, handlers, signIn, signOut } = NextAuth(authConfig);
