@@ -10,25 +10,25 @@ export default function BlobScatterBackground() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Blob 1: 从左上角飘入
+      // Blob 1: 淡入 + 缩放
       gsap.fromTo(
         blob1Ref.current,
-        { x: -200, y: -200, opacity: 0, scale: 0.5 },
-        { x: 0, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out', delay: 0.1 }
+        { opacity: 0, scale: 0.5 },
+        { opacity: 1, scale: 1, duration: 1, ease: 'power2.out', delay: 0.1 }
       );
 
-      // Blob 2: 从左下角飘入
+      // Blob 2: 淡入 + 缩放
       gsap.fromTo(
         blob2Ref.current,
-        { x: -200, y: 200, opacity: 0, scale: 0.5 },
-        { x: 0, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out', delay: 0.3 }
+        { opacity: 0, scale: 0.5 },
+        { opacity: 1, scale: 1, duration: 1, ease: 'power2.out', delay: 0.3 }
       );
 
-      // Blob 3: 从右上角飘入
+      // Blob 3: 淡入 + 缩放
       gsap.fromTo(
         blob3Ref.current,
-        { x: 200, y: -200, opacity: 0, scale: 0.5 },
-        { x: 0, y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out', delay: 0.5 }
+        { opacity: 0, scale: 0.5 },
+        { opacity: 1, scale: 1, duration: 1, ease: 'power2.out', delay: 0.5 }
       );
     });
 
