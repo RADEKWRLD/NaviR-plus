@@ -9,8 +9,8 @@ interface DragOverlayBookmarkProps {
 export default function DragOverlayBookmark({ bookmark }: DragOverlayBookmarkProps) {
   const getFaviconUrl = (url: string) => {
     try {
-      const hostname = new URL(url).hostname;
-      return `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
+      const urlObj = new URL(url);
+      return `https://api.freejk.com/gongju/favicon/?url=${urlObj.origin}/`;
     } catch {
       return '';
     }
