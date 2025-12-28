@@ -13,7 +13,7 @@ export default function GraphicBackground() {
       />
 
       {/* Decorative geometric shapes */}
-      <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#FF6B35] opacity-10" />
+      <div className="absolute bottom-20 left-20 w-32 h-32 opacity-10" style={{ backgroundColor: 'var(--color-accent)' }} />
     </div>
   );
 }

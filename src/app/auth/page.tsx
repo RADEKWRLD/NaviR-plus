@@ -41,7 +41,7 @@ export default function AuthPage() {
       {/* Back Arrow Button */}
       <button
         onClick={() => router.push('/')}
-        className="fixed top-8 left-8 z-20 p-3 text-black hover:text-[#FF6B35] transition-colors"
+        className="fixed top-8 left-8 z-20 p-3 text-black transition-colors hover:text-accent"
         aria-label="Back to home"
       >
         <svg

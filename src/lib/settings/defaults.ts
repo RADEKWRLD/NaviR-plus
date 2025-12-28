@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: Settings = {
     backgroundEffect: 'blob',
     clockFormat: '24h',
     enableBlur: false,
+    colorScheme: 'orange',
   },
   search: {
     defaultEngine: 'google',

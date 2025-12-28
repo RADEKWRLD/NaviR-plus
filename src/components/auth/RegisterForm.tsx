@@ -108,8 +108,10 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full h-12 py-4 px-6 bg-[#FF6B35] hover:bg-[#E85A2B] text-white font-bold text-lg uppercase border-[3px] border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ fontFamily: "var(--font-oxanium)" }}
+          className="w-full h-12 py-4 px-6 text-white font-bold text-lg uppercase border-[3px] border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ fontFamily: "var(--font-oxanium)", backgroundColor: "var(--color-accent)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-accent-hover)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-accent)")}
         >
           {isLoading ? "Creating Account..." : "Sign Up"}
         </button>

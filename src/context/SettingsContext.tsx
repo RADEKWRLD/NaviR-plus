@@ -15,6 +15,7 @@ import type {
   BookmarkSettings,
   SettingsContextType,
   Theme,
+  ColorScheme,
 } from '@/types/settings';
 import { DEFAULT_SETTINGS, SETTINGS_STORAGE_KEY } from '@/lib/settings/defaults';
 
@@ -58,6 +59,11 @@ function applyTheme(theme: Theme) {
   }
 }
 
+// 应用配色方案
+function applyColorScheme(scheme: ColorScheme) {
+  document.documentElement.setAttribute('data-color-scheme', scheme);
+}
+
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,6 +73,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const stored = getStoredSettings();
     setSettings(stored);
     applyTheme(stored.appearance.theme);
+    applyColorScheme(stored.appearance.colorScheme);
     setIsLoading(false);
   }, []);
 
@@ -91,6 +98,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       // 如果更新了主题，立即应用
       if (updates.theme) {
         applyTheme(updates.theme);
+      }
+
+      // 如果更新了配色，立即应用
+      if (updates.colorScheme) {
+        applyColorScheme(updates.colorScheme);
       }
 
       return newSettings;
@@ -123,6 +135,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings(DEFAULT_SETTINGS);
     saveSettings(DEFAULT_SETTINGS);
     applyTheme(DEFAULT_SETTINGS.appearance.theme);
+    applyColorScheme(DEFAULT_SETTINGS.appearance.colorScheme);
   }, []);
 
   return (

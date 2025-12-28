@@ -88,6 +88,103 @@ body {
   color: var(--color-accent);
 }
 
+/* Color Schemes - 12 种配色方案 */
+html[data-color-scheme="orange"] {
+  --color-accent: #FF6B35;
+  --color-accent-hover: #E85A2B;
+  --color-accent-light: #FFB798;
+  --color-accent-dark: #AB2B00;
+  --color-accent-mid: #D54B1B;
+}
+
+html[data-color-scheme="blue"] {
+  --color-accent: #0084FF;
+  --color-accent-hover: #0066CC;
+  --color-accent-light: #7FBFFF;
+  --color-accent-dark: #003D75;
+  --color-accent-mid: #0057A8;
+}
+
+html[data-color-scheme="green"] {
+  --color-accent: #22C55E;
+  --color-accent-hover: #16A34A;
+  --color-accent-light: #86EFAC;
+  --color-accent-dark: #14532D;
+  --color-accent-mid: #15803D;
+}
+
+html[data-color-scheme="purple"] {
+  --color-accent: #A855F7;
+  --color-accent-hover: #9333EA;
+  --color-accent-light: #D8B4FE;
+  --color-accent-dark: #581C87;
+  --color-accent-mid: #7E22CE;
+}
+
+html[data-color-scheme="pink"] {
+  --color-accent: #EC4899;
+  --color-accent-hover: #DB2777;
+  --color-accent-light: #F9A8D4;
+  --color-accent-dark: #831843;
+  --color-accent-mid: #BE185D;
+}
+
+html[data-color-scheme="red"] {
+  --color-accent: #EF4444;
+  --color-accent-hover: #DC2626;
+  --color-accent-light: #FCA5A5;
+  --color-accent-dark: #7F1D1D;
+  --color-accent-mid: #B91C1C;
+}
+
+html[data-color-scheme="cyan"] {
+  --color-accent: #06B6D4;
+  --color-accent-hover: #0891B2;
+  --color-accent-light: #67E8F9;
+  --color-accent-dark: #164E63;
+  --color-accent-mid: #0E7490;
+}
+
+html[data-color-scheme="yellow"] {
+  --color-accent: #EAB308;
+  --color-accent-hover: #CA8A04;
+  --color-accent-light: #FDE047;
+  --color-accent-dark: #713F12;
+  --color-accent-mid: #A16207;
+}
+
+html[data-color-scheme="indigo"] {
+  --color-accent: #6366F1;
+  --color-accent-hover: #4F46E5;
+  --color-accent-light: #A5B4FC;
+  --color-accent-dark: #312E81;
+  --color-accent-mid: #4338CA;
+}
+
+html[data-color-scheme="teal"] {
+  --color-accent: #14B8A6;
+  --color-accent-hover: #0D9488;
+  --color-accent-light: #5EEAD4;
+  --color-accent-dark: #134E4A;
+  --color-accent-mid: #0F766E;
+}
+
+html[data-color-scheme="amber"] {
+  --color-accent: #F59E0B;
+  --color-accent-hover: #D97706;
+  --color-accent-light: #FCD34D;
+  --color-accent-dark: #78350F;
+  --color-accent-mid: #B45309;
+}
+
+html[data-color-scheme="slate"] {
+  --color-accent: #64748B;
+  --color-accent-hover: #475569;
+  --color-accent-light: #CBD5E1;
+  --color-accent-dark: #1E293B;
+  --color-accent-mid: #334155;
+}
+
 /* Dark Mode */
 html.dark {
   --color-black: #ffffff;

@@ -4,6 +4,21 @@ export type Theme = 'light' | 'dark' | 'system';
 // 时钟格式
 export type ClockFormat = '12h' | '24h';
 
+// 配色方案
+export type ColorScheme =
+  | 'orange'
+  | 'blue'
+  | 'green'
+  | 'purple'
+  | 'pink'
+  | 'red'
+  | 'cyan'
+  | 'yellow'
+  | 'indigo'
+  | 'teal'
+  | 'amber'
+  | 'slate';
+
 // 背景效果类型
 export type BackgroundEffect =
   | 'blob'           // 动画 blob
@@ -30,6 +45,7 @@ export interface AppearanceSettings {
   backgroundEffect: BackgroundEffect;
   clockFormat: ClockFormat;
   enableBlur: boolean;
+  colorScheme: ColorScheme;
 }
 
 // 搜索设置
