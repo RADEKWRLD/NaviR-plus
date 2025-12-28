@@ -7,13 +7,18 @@ import { Bookmark } from '@/types/bookmark';
 
 interface BookmarkItemProps {
   bookmark: Bookmark;
+  isDragging?: boolean;
 }
 
-export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
+export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkItemProps) {
   // const { deleteBookmark } = useBookmarks();
   // const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (isDragging) {
+      e.preventDefault();
+      return;
+    }
     window.open(bookmark.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -38,7 +43,13 @@ export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
       onClick={handleClick}
       // onMouseEnter={() => setIsHovered(true)}
       // onMouseLeave={() => setIsHovered(false)}
-      className="relative w-30 h-30 border-[3px] rounded-2xl border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35] transition-all duration-300"
+      className={`
+        relative w-30 h-30 border-[3px] rounded-2xl border-black bg-white
+        flex flex-col items-center justify-center
+        hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35]
+        transition-all duration-300
+        ${isDragging ? 'shadow-2xl scale-105 border-[#FF6B35] cursor-grabbing' : 'cursor-grab'}
+      `}
     >
       {/* {isHovered && (
         <button
@@ -52,14 +63,14 @@ export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
       <img
         src={getFaviconUrl(bookmark.url)}
         alt=""
-        className="w-12 h-12 object-contain"
+        className="w-12 h-12 object-contain pointer-events-none"
         onError={(e) => {
           e.currentTarget.style.display = 'none';
         }}
       />
 
       <span
-        className="mt-2 text-xs font-bold text-center truncate w-full px-2"
+        className="mt-2 text-xs font-bold text-center truncate w-full px-2 pointer-events-none"
         style={{ fontFamily: 'var(--font-oxanium)' }}
       >
         {bookmark.title}

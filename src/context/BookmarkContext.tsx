@@ -7,6 +7,7 @@ interface BookmarkContextType {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => void;
   deleteBookmark: (id: string) => void;
+  reorderBookmarks: (activeId: string, overId: string) => void;
 }
 
 const BookmarkContext = createContext<BookmarkContextType | undefined>(undefined);
@@ -94,8 +95,26 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
     setBookmarks(prev => prev.filter(b => b.id !== id));
   };
 
+  const reorderBookmarks = (activeId: string, overId: string) => {
+    setBookmarks((prev) => {
+      const oldIndex = prev.findIndex((b) => b.id === activeId);
+      const newIndex = prev.findIndex((b) => b.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      const newBookmarks = [...prev];
+      const [movedItem] = newBookmarks.splice(oldIndex, 1);
+      newBookmarks.splice(newIndex, 0, movedItem);
+
+      return newBookmarks.map((bookmark, index) => ({
+        ...bookmark,
+        position: index,
+      }));
+    });
+  };
+
   return (
-    <BookmarkContext.Provider value={{ bookmarks, addBookmark, deleteBookmark }}>
+    <BookmarkContext.Provider value={{ bookmarks, addBookmark, deleteBookmark, reorderBookmarks }}>
       {children}
     </BookmarkContext.Provider>
   );

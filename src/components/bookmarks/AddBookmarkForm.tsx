@@ -21,9 +21,9 @@ export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-md z-60 flex items-center justify-center" onClick={onClose}>
       <div
-        className="bg-white border-[3px] border-black p-8 w-full max-w-md"
+        className="bg-white border-[3px] p-18 border-black rounded-4xl w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-bold mb-6 uppercase" style={{ fontFamily: 'var(--font-oxanium)' }}>
