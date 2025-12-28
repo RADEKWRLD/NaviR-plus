@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { gsap } from '@/lib/gsap/config';
 import { useAuth } from '@/context/AuthContext';
 import GraphicBackground from '@/components/background/GraphicBackground';
 import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
@@ -13,12 +14,23 @@ export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
       router.push('/');
     }
   }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+      );
+    }
+  }, []);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-white">
@@ -49,7 +61,7 @@ export default function AuthPage() {
       </button>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-12 bg-transparent">
-        <div className="w-full max-w-md bg-transparent">
+        <div ref={containerRef} className="w-full max-w-md bg-transparent">
           <div className="text-center mb-12">
             <h1 className="text-6xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-oxanium)' }}>
               NAVIR

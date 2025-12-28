@@ -12,13 +12,13 @@ export default function BlobBackground() {
       gsap.fromTo(
         topBlobRef.current,
         {y: -405 },
-        {y: 0, duration: 1.2, ease: 'power2.out', delay: 0.2 }
+        {y: 0, duration: 1, ease: 'power2.out', delay: 0.2 }
       );
 
       gsap.fromTo(
         bottomBlobRef.current,
         { y: 910 },
-        { y: 505, duration: 1.2, ease: 'power2.out', delay: 0.4 }
+        { y: 505, duration: 1, ease: 'power2.out', delay: 0.4 }
       );
     });
 

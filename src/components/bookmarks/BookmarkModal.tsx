@@ -42,12 +42,12 @@ export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 bg-black/30 backdrop-blur-md z-50"
+      className="fixed inset-0 bg-black/10 backdrop-blur-md z-50"
       onClick={onClose}
     >
       <div
         ref={modalRef}
-        className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-white/95 backdrop-blur-lg border-[3px] border-black overflow-hidden"
+        className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-white/95 backdrop-blur-lg border-[3px] border-black overflow-hidden rounded-4xl"
         onClick={(e) => e.stopPropagation()}
       >
         <ASCIIBackground />

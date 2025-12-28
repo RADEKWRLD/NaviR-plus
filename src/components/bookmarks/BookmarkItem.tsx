@@ -38,7 +38,7 @@ export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
       onClick={handleClick}
       // onMouseEnter={() => setIsHovered(true)}
       // onMouseLeave={() => setIsHovered(false)}
-      className="relative w-30 h-30 border-[3px] border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35] transition-all duration-300"
+      className="relative w-30 h-30 border-[3px] rounded-2xl border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35] transition-all duration-300"
     >
       {/* {isHovered && (
         <button
