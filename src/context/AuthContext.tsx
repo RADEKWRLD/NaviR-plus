@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
 
 interface User {
@@ -19,23 +19,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<User | null>(null);
+
+  const user = useMemo<User | null>(() => {
+    if (session?.user) {
+      return {
+        id: session.user.id,
+        name: session.user.name || '',
+        email: session.user.email || '',
+      };
+    }
+    return null;
+  }, [session]);
 
   useEffect(() => {
-    if (session?.user) {
-      const sessionUser = session.user as any;
-      const userData = {
-        id: sessionUser.id,
-        name: sessionUser.name || '',
-        email: sessionUser.email || '',
-      };
-      setUser(userData);
-      localStorage.setItem('navir_user', JSON.stringify(userData));
+    if (user) {
+      localStorage.setItem('navir_user', JSON.stringify(user));
     } else {
-      setUser(null);
       localStorage.removeItem('navir_user');
     }
-  }, [session]);
+  }, [user]);
 
   return (
     <AuthContext.Provider

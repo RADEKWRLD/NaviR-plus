@@ -1,26 +1,29 @@
-import { AuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import type { NextAuthConfig } from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword } from './passwordUtils';
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthConfig = {
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        const email = credentials?.email as string | undefined;
+        const password = credentials?.password as string | undefined;
+
+        if (!email || !password) {
           throw new Error('Please provide email and password');
         }
 
         const userList = await db.select()
           .from(users)
-          .where(eq(users.email, credentials.email));
+          .where(eq(users.email, email));
 
         const user = userList[0];
 
@@ -29,7 +32,7 @@ export const authOptions: AuthOptions = {
         }
 
         const isValid = await verifyPassword(
-          credentials.password,
+          password,
           user.password
         );
 
@@ -62,7 +65,7 @@ export const authOptions: AuthOptions = {
 
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id as string;
+        session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
       }

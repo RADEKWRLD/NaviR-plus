@@ -21,7 +21,7 @@ export default function AddBookmarkForm({ onClose }: AddBookmarkFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center" onClick={onClose}>
       <div
         className="bg-white border-[3px] border-black p-8 w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
