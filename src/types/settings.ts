@@ -5,7 +5,14 @@ export type Theme = 'light' | 'dark' | 'system';
 export type ClockFormat = '12h' | '24h';
 
 // 背景效果类型
-export type BackgroundEffect = 'blob' | 'none';
+export type BackgroundEffect =
+  | 'blob'           // 动画 blob
+  | 'world-map'      // World Map.svg
+  | 'wave'           // wave-haikei.svg
+  | 'blob-scatter'   // blob-scatter-haikei.svg
+  | 'layered-peaks'  // layered-peaks-haikei.svg
+  | 'layered-steps'  // layered-steps-haikei.svg
+  | 'none';
 
 // 搜索引擎 ID
 export type SearchEngineId =

@@ -60,7 +60,7 @@ export default function SettingsSidebar({
               `}
               style={{ fontFamily: 'var(--font-oxanium)' }}
             >
-              <span className="text-xl">{category.icon}</span>
+              <span className="text-xl w-6 text-center">{category.icon}</span>
               <span>{category.label}</span>
             </button>
           );

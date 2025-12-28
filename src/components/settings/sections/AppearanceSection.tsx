@@ -12,6 +12,10 @@ const THEME_OPTIONS: Array<{ value: Theme; label: string }> = [
 
 const BACKGROUND_OPTIONS: Array<{ value: BackgroundEffect; label: string }> = [
   { value: "blob", label: "Blob Animation" },
+  { value: "wave", label: "Wave" },
+  { value: "blob-scatter", label: "Blob Scatter" },
+  { value: "layered-peaks", label: "Layered Peaks" },
+  { value: "layered-steps", label: "Layered Steps" },
   { value: "none", label: "None" },
 ];
 

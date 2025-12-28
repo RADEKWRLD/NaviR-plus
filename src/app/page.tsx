@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import GraphicBackground from '@/components/background/GraphicBackground';
 import BlobBackground from '@/components/background/BlobBackground';
+import WaveBackground from '@/components/background/WaveBackground';
+import BlobScatterBackground from '@/components/background/BlobScatterBackground';
+import LayeredPeaksBackground from '@/components/background/LayeredPeaksBackground';
+import LayeredStepsBackground from '@/components/background/LayeredStepsBackground';
+import WorldMapBackground from '@/components/background/WorldMapBackground';
 import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
 import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
@@ -30,6 +35,11 @@ export default function Home() {
       {/* Background effects based on settings */}
       <GraphicBackground />
       {settings.appearance.backgroundEffect === 'blob' && <BlobBackground />}
+      {settings.appearance.backgroundEffect === 'wave' && <WaveBackground />}
+      {settings.appearance.backgroundEffect === 'blob-scatter' && <BlobScatterBackground />}
+      {settings.appearance.backgroundEffect === 'layered-peaks' && <LayeredPeaksBackground />}
+      {settings.appearance.backgroundEffect === 'layered-steps' && <LayeredStepsBackground />}
+      {settings.appearance.backgroundEffect === 'world-map' && <WorldMapBackground />}
 
       {/* GSAP animated typography layer */}
       <AnimatedTypographyLayer />
