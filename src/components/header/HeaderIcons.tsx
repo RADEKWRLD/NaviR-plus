@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { gsap } from "@/lib/gsap/config";
 import { useAuth } from "@/context/AuthContext";
 import UserIcon from "@/components/icons/UserIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
@@ -11,6 +12,17 @@ export default function HeaderIcons() {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showUserMenu && menuRef.current) {
+      gsap.fromTo(
+        menuRef.current,
+        { opacity: 0, y: -10, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.7)" }
+      );
+    }
+  }, [showUserMenu]);
 
   const handleUserClick = () => {
     if (isAuthenticated) {
@@ -43,21 +55,28 @@ export default function HeaderIcons() {
               className="fixed inset-0 z-30"
               onClick={() => setShowUserMenu(false)}
             />
-            <div className="absolute top-full right-0 mt-2 w-48 bg-white border-[3px] border-black z-40 shadow-lg rounded-xl">
-              <div className="p-4 border-b-[3px] border-black">
-                <p
-                  className="font-bold text-sm text-center truncate"
-                  style={{ fontFamily: "var(--font-oxanium)" }}
-                >
-                  {user?.name}
-                </p>
-                <p className="text-xs text-center text-gray-600 truncate">
-                  {user?.email}
-                </p>
+            <div
+              ref={menuRef}
+              className="absolute right-0 w-48 bg-white border-[3px] border-black z-40 shadow-lg rounded-xl"
+            >
+              <div className="p-4 h-18 border-b-[3px] border-black flex flex-col items-center justify-center">
+                <div className="w-full h-1/2 flex justify-center items-center">
+                  <p
+                    className="font-bold text-sm text-[#FF6B35] text-center truncate"
+                    style={{ fontFamily: "var(--font-oxanium)" }}
+                  >
+                    {user?.name}
+                  </p>
+                </div>
+                <div className="w-full h-1/4 flex justify-center items-center">
+                  <p className="text-xs text-center text-gray-600 truncate">
+                    {user?.email}
+                  </p>
+                </div>
               </div>
               <div
                 onClick={handleLogout}
-                className="w-full cursor-pointer text-center font-bold text-sm hover:bg-[#FF6B35] transition-colors uppercase"
+                className="w-full cursor-pointer text-center font-bold text-sm hover:bg-[#FF6B35] transition-colors uppercase rounded-b-lg"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
                 Logout
