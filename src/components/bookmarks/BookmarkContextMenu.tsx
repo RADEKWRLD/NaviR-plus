@@ -38,20 +38,21 @@ export default function BookmarkContextMenu({
         style={{
           left: position.x,
           top: position.y,
+          transform: "translate(-120%, -150%)",
           minWidth: "120px",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={handleEdit}
-          className="w-full px-4 py-3 text-left font-bold uppercase text-sm hover:bg-gray-100 transition-colors border-b-2 border-black"
+          className="w-full px-6 py-4 text-center font-bold uppercase text-xl  hover:bg-gray-100 transition-colors border-b-2 border-black"
           style={{ fontFamily: "var(--font-oxanium)" }}
         >
           Edit
         </button>
         <button
           onClick={onDelete}
-          className="w-full px-4 py-3 text-left font-bold uppercase text-sm hover:bg-red-100 text-red-600 transition-colors"
+          className="w-full px-6 py-4 text-center font-bold uppercase text-xl hover:bg-red-100 text-red-600 transition-colors"
           style={{ fontFamily: "var(--font-oxanium)" }}
         >
           Delete
