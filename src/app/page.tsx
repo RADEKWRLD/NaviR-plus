@@ -18,17 +18,42 @@ import { useSettings } from '@/context/SettingsContext';
 
 export default function Home() {
   const [showBookmarkModal, setShowBookmarkModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { settings } = useSettings();
 
+  // 检测是否为移动端
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 书签栏触发：桌面端右键，移动端单击背景
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       setShowBookmarkModal(true);
     };
 
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // 排除交互元素的点击
+      if (!target.closest('button, a, input, [role="button"], .bookmark-modal')) {
+        setShowBookmarkModal(true);
+      }
+    };
+
     window.addEventListener('contextmenu', handleContextMenu);
-    return () => window.removeEventListener('contextmenu', handleContextMenu);
-  }, []);
+    if (isMobile) {
+      window.addEventListener('click', handleClick);
+    }
+
+    return () => {
+      window.removeEventListener('contextmenu', handleContextMenu);
+      window.removeEventListener('click', handleClick);
+    };
+  }, [isMobile]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent">
