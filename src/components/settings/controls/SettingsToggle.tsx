@@ -21,7 +21,7 @@ export default function SettingsToggle({
       className={`
         relative w-14 h-8 rounded-full border-[3px] border-(--border-default)
         transition-colors duration-200
-        ${checked ? 'bg-[#FF6B35]' : 'bg-(--color-gray-light)'}
+        ${checked ? 'bg-(--color-accent)' : 'bg-(--color-gray-light)'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >

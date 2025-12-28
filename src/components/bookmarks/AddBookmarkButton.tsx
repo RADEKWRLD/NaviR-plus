@@ -10,9 +10,9 @@ export default function AddBookmarkButton() {
     <>
       <button
         onClick={() => setShowForm(true)}
-        className="group w-30 h-30 rounded-2xl border-[3px] border-black border-dashed bg-gray-50 hover:bg-gray-100 hover:shadow-lg hover:border-[#FF6B35] flex items-center justify-center cursor-pointer transition-all duration-300"
+        className="group w-30 h-30 rounded-2xl border-[3px] border-(--border-default) border-dashed bg-(--bg-secondary) hover:bg-(--color-gray-light) hover:shadow-lg hover:border-(--color-accent) flex items-center justify-center cursor-pointer transition-all duration-300"
       >
-        <span className="text-4xl font-bold text-gray-400 group-hover:text-[#FF6B35] transition-colors">+</span>
+        <span className="text-4xl font-bold text-(--text-muted) group-hover:text-(--color-accent) transition-colors">+</span>
       </button>
 
       {showForm && <AddBookmarkForm onClose={() => setShowForm(false)} />}

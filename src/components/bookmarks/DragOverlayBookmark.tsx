@@ -18,7 +18,7 @@ export default function DragOverlayBookmark({ bookmark }: DragOverlayBookmarkPro
 
   return (
     <div
-      className="relative w-30 h-30 border-[3px] rounded-2xl border-[#FF6B35] bg-white
+      className="relative w-30 h-30 border-[3px] rounded-2xl border-(--color-accent) bg-(--bg-main)
         flex flex-col items-center justify-center cursor-grabbing
         shadow-2xl rotate-3"
       style={{ transform: 'translate(-100%, -100%) rotate(3deg)' }}

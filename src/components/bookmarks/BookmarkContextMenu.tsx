@@ -34,7 +34,7 @@ export default function BookmarkContextMenu({
       onClick={onClose}
     >
       <div
-        className="absolute bg-white border-[3px] border-black shadow-lg"
+        className="absolute bg-(--bg-main) border-[3px] border-(--border-default) shadow-lg"
         style={{
           left: position.x,
           top: position.y,
@@ -45,7 +45,7 @@ export default function BookmarkContextMenu({
       >
         <button
           onClick={handleEdit}
-          className="w-full px-6 py-4 text-center font-bold uppercase text-xl  hover:bg-gray-100 transition-colors border-b-2 border-black"
+          className="w-full px-6 py-4 text-center font-bold uppercase text-xl hover:bg-(--color-gray-light) transition-colors border-b-2 border-(--border-default)"
           style={{ fontFamily: "var(--font-oxanium)" }}
         >
           Edit

@@ -66,11 +66,11 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         className={`
-          relative w-30 h-30 border-[3px] rounded-2xl border-black bg-white
+          relative w-30 h-30 border-[3px] rounded-2xl border-black bg-[#ffffff] text-black
           flex flex-col items-center justify-center
-          hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35]
+          hover:bg-[#f5f5f5] hover:shadow-lg hover:border-(--color-accent)
           transition-all duration-300
-          ${isDragging ? 'shadow-2xl scale-105 border-[#FF6B35] cursor-grabbing' : 'cursor-grab'}
+          ${isDragging ? 'shadow-2xl scale-105 border-(--color-accent) cursor-grabbing' : 'cursor-grab'}
         `}
       >
         <img

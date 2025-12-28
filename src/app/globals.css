@@ -89,7 +89,7 @@ body {
 }
 
 /* Dark Mode */
-.dark {
+html.dark {
   --color-black: #ffffff;
   --color-white: #1a1a1a;
   --color-gray-light: #2a2a2a;
@@ -106,16 +106,16 @@ body {
   --border-default: #ffffff;
 }
 
-.dark body {
+html.dark body {
   background: var(--bg-main);
   color: var(--text-primary);
 }
 
-.dark .text-outline {
+html.dark .text-outline {
   -webkit-text-stroke-color: var(--color-white);
 }
 
-.dark .text-inverted {
+html.dark .text-inverted {
   background: var(--color-white);
   color: var(--color-black);
 }

@@ -41,7 +41,7 @@ export default function SearchSection() {
         </div>
 
         {/* Open in New Tab */}
-        <div className="flex items-center justify-between py-4 border-b-[3px] border-black" style={{paddingBottom:"1rem"}}>
+        <div className="flex items-center justify-between py-4 border-b-[3px] border-(--border-default)" style={{paddingBottom:"1rem"}}>
           <div>
             <p
               className="font-bold uppercase tracking-wide text-(--text-primary)"

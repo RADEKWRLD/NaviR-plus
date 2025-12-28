@@ -77,9 +77,9 @@ export default function SearchInput() {
       </div>
 
       {/* Search container - single thick border rectangle */}
-      <div className="relative border-[3px] border-black bg-white flex items-stretch flex-1">
+      <div className="relative border-[3px] border-(--border-default) bg-(--bg-main) flex items-stretch flex-1">
         {/* Left side - Engine switcher (square) */}
-        <div className="shrink-0 w-20 h-20 border-r-[3px] border-black flex items-center justify-center bg-gray-50">
+        <div className="shrink-0 w-20 h-20 border-r-[3px] border-(--border-default) flex items-center justify-center bg-(--bg-secondary)">
           <SearchEngineSwitcher
             selectedEngine={selectedEngine}
             onEngineChange={setSelectedEngine}
@@ -102,7 +102,7 @@ export default function SearchInput() {
         {/* Right side - Search button (square) */}
         <button
           onClick={handleSearch}
-          className="shrink-0 w-20 h-20 bg-[#FF6B35] hover:bg-[#E85A2B] transition-colors flex items-center justify-center border-l-[3px] border-black"
+          className="shrink-0 w-20 h-20 bg-(--color-accent) hover:bg-(--color-accent-hover) transition-colors flex items-center justify-center border-l-[3px] border-(--border-default)"
           aria-label="Search"
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">

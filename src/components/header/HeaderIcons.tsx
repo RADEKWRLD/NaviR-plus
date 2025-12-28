@@ -45,7 +45,7 @@ export default function HeaderIcons() {
       <div className="relative">
         <button
           onClick={handleUserClick}
-          className="w-12 h-12 border-[3px] border-black bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer rounded-4xl"
+          className="w-12 h-12 border-[3px] border-(--border-default) bg-(--bg-secondary) hover:bg-(--color-gray-light) flex items-center justify-center transition-colors cursor-pointer rounded-4xl"
         >
           <UserIcon />
         </button>
@@ -59,9 +59,9 @@ export default function HeaderIcons() {
             />
             <div
               ref={menuRef}
-              className="absolute right-0 w-48 bg-white border-[3px] border-black z-40 shadow-lg rounded-xl"
+              className="absolute right-0 w-48 bg-(--bg-main) border-[3px] border-(--border-default) z-40 shadow-lg rounded-xl"
             >
-              <div className="p-4 h-18 border-b-[3px] border-black flex flex-col items-center justify-center">
+              <div className="p-4 h-18 border-b-[3px] border-(--border-default) flex flex-col items-center justify-center">
                 <div className="w-full h-1/2 flex justify-center items-center">
                   <p
                     className="font-bold text-sm text-[#FF6B35] text-center truncate"
@@ -71,14 +71,14 @@ export default function HeaderIcons() {
                   </p>
                 </div>
                 <div className="w-full h-1/4 flex justify-center items-center">
-                  <p className="text-xs text-center text-gray-600 truncate">
+                  <p className="text-xs text-center text-(--text-muted) truncate">
                     {user?.email}
                   </p>
                 </div>
               </div>
               <div
                 onClick={handleLogout}
-                className="w-full cursor-pointer text-center font-bold text-sm hover:bg-[#FF6B35] transition-colors uppercase rounded-b-lg"
+                className="w-full cursor-pointer text-center font-bold text-sm hover:bg-(--color-accent) hover:text-(--color-white) transition-colors uppercase rounded-b-lg"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
                 Logout

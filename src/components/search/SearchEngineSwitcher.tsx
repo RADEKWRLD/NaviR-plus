@@ -23,7 +23,7 @@ export default function SearchEngineSwitcher({ selectedEngine, onEngineChange }:
       {/* Current engine display - icon with dropdown arrow */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-2 py-2 hover:bg-gray-100 transition-colors rounded"
+        className="flex items-center gap-2 px-2 py-2 hover:bg-(--color-gray-light) transition-colors rounded"
         type="button"
       >
         <EngineIcon engine={selectedEngine.icon} size={24} />
@@ -41,13 +41,13 @@ export default function SearchEngineSwitcher({ selectedEngine, onEngineChange }:
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 mt-2 bg-white border-[3px] border-black z-20 min-w-50">
+          <div className="absolute top-full left-0 mt-2 bg-(--bg-main) border-[3px] border-(--border-default) z-20 min-w-50">
             {SEARCH_ENGINES.map((engine) => (
               <button
                 key={engine.id}
                 onClick={() => handleEngineSelect(engine)}
-                className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#FF6B35] hover:text-white transition-colors ${
-                  selectedEngine.id === engine.id ? 'bg-black text-white' : ''
+                className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-(--color-accent) hover:text-(--color-white) transition-colors ${
+                  selectedEngine.id === engine.id ? 'bg-(--color-black) text-(--color-white)' : ''
                 }`}
                 type="button"
               >

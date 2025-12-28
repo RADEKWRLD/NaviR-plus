@@ -72,7 +72,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
       onClick={onClose}
     >
       <div
-        className="bg-white border-[3px]  border-black  w-full max-w-md"
+        className="bg-(--bg-main) border-[3px] border-(--border-default) w-full max-w-md"
         style={{ padding: "20px" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -103,7 +103,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={isFetchingTitle ? "Loading..." : "My Website"}
                 required
-                className="w-full px-4 py-3 border-[3px] border-black bg-white text-lg font-bold focus:outline-none focus:border-[#FF6B35] transition-colors"
+                className="w-full px-4 py-3 border-[3px] border-(--border-default) bg-(--bg-main) text-(--text-primary) text-lg font-bold focus:outline-none focus:border-(--color-accent) transition-colors"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               />
             </div>
@@ -122,7 +122,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
                 onBlur={handleUrlBlur}
                 placeholder="https://example.com"
                 required
-                className="w-full px-4 py-3 border-[3px] border-black bg-white text-lg font-bold focus:outline-none focus:border-[#FF6B35] transition-colors"
+                className="w-full px-4 py-3 border-[3px] border-(--border-default) bg-(--bg-main) text-(--text-primary) text-lg font-bold focus:outline-none focus:border-(--color-accent) transition-colors"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               />
             </div>
@@ -130,7 +130,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
             <div className="flex gap-4 mt-8">
               <button
                 type="submit"
-                className="flex-1 h-10 py-3 px-6 bg-[#FF6B35] hover:bg-[#E85A2B] text-white font-bold uppercase border-[3px] border-black transition-colors"
+                className="flex-1 h-10 py-3 px-6 bg-(--color-accent) hover:bg-(--color-accent-hover) text-(--color-white) font-bold uppercase border-[3px] border-(--border-default) transition-colors"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
                 {isEditMode ? "Save" : "Add"}
@@ -138,7 +138,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 px-6 h-10 bg-white hover:bg-gray-50 text-black font-bold uppercase border-[3px] border-black transition-colors"
+                className="flex-1 py-3 px-6 h-10 bg-(--bg-main) hover:bg-(--bg-secondary) text-(--text-primary) font-bold uppercase border-[3px] border-(--border-default) transition-colors"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
                 Cancel

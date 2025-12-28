@@ -26,7 +26,7 @@ export default function SettingsSelect({
       className={`
         w-full px-4 py-3 border-[3px] border-(--border-default)
         bg-(--bg-main) text-(--text-primary) text-lg font-bold
-        focus:outline-none focus:border-[#FF6B35]
+        focus:outline-none focus:border-(--color-accent)
         transition-colors cursor-pointer
         appearance-none
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}

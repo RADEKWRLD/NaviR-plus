@@ -47,7 +47,7 @@ export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
     >
       <div
         ref={modalRef}
-        className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-white/95 backdrop-blur-lg border-[3px] border-black overflow-hidden rounded-4xl"
+        className="absolute top-[10%] left-[10%] w-[80%] h-[80%] bg-(--bg-main)/95 backdrop-blur-lg border-[3px] border-(--border-default) overflow-hidden rounded-4xl"
         onClick={(e) => e.stopPropagation()}
       >
         <ASCIIBackground />
