@@ -64,7 +64,7 @@ export default function HeaderIcons() {
               <div className="p-4 h-18 border-b-[3px] border-(--border-default) flex flex-col items-center justify-center">
                 <div className="w-full h-1/2 flex justify-center items-center">
                   <p
-                    className="font-bold text-sm text-[#FF6B35] text-center truncate"
+                    className="font-bold text-sm text-(--color-accent) text-center truncate"
                     style={{ fontFamily: "var(--font-oxanium)" }}
                   >
                     {user?.name}
