@@ -4,20 +4,18 @@ import { useMemo, useEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap/config';
 
 export default function ASCIIBackground() {
-  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const rowsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     // 为每一行添加不同速度的滚动动画
     rowsRef.current.forEach((row, index) => {
-      if (row) {
-        const speed = 15 + (index % 5) * 3; // 不同行不同速度 15-27秒
-        gsap.to(row, {
-          x: '-=200',
-          duration: speed,
-          ease: 'none',
-          repeat: -1,
-        });
-      }
+      const speed = 15 + (index % 5) * 3; // 不同行不同速度 15-27秒
+      gsap.to(row, {
+        x: '-=200',
+        duration: speed,
+        ease: 'none',
+        repeat: -1,
+      });
     });
   }, []);
 
@@ -43,7 +41,9 @@ export default function ASCIIBackground() {
           {grid.map((row, i) => (
             <div
               key={i}
-              ref={(el) => (rowsRef.current[i] = el)}
+              ref={(el) => {
+                if (el) rowsRef.current[i] = el;
+              }}
               className="flex justify-center whitespace-nowrap"
             >
               {row.map((cell, j) => (

@@ -1,28 +1,28 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { gsap } from '@/lib/gsap/config';
+// import { useState, useEffect, useRef } from 'react';
+// import { gsap } from '@/lib/gsap/config';
 import { Bookmark } from '@/types/bookmark';
-import { useBookmarks } from '@/context/BookmarkContext';
+// import { useBookmarks } from '@/context/BookmarkContext';
 
 interface BookmarkItemProps {
   bookmark: Bookmark;
 }
 
 export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
-  const { deleteBookmark } = useBookmarks();
-  const [isHovered, setIsHovered] = useState(false);
+  // const { deleteBookmark } = useBookmarks();
+  // const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     window.open(bookmark.url, '_blank', 'noopener,noreferrer');
   };
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (confirm('Delete this bookmark?')) {
-      deleteBookmark(bookmark.id);
-    }
-  };
+  // const handleDelete = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   if (confirm('Delete this bookmark?')) {
+  //     deleteBookmark(bookmark.id);
+  //   }
+  // };
 
   const getFaviconUrl = (url: string) => {
     try {
@@ -36,18 +36,18 @@ export default function BookmarkItem({ bookmark }: BookmarkItemProps) {
   return (
     <div
       onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      // onMouseEnter={() => setIsHovered(true)}
+      // onMouseLeave={() => setIsHovered(false)}
       className="relative w-30 h-30 border-[3px] border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:shadow-lg hover:border-[#FF6B35] transition-all duration-300"
     >
-      {isHovered && (
+      {/* {isHovered && (
         <button
           onClick={handleDelete}
-          className="absolute -top-2 -right-2 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:bg-[#FF6B35] transition-colors"
+          className="absolute top-1 right-1 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:bg-[#FF6B35] transition-colors"
         >
           ✕
         </button>
-      )}
+      )} */}
 
       <img
         src={getFaviconUrl(bookmark.url)}
