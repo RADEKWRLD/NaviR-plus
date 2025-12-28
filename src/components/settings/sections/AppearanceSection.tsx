@@ -17,6 +17,7 @@ const BACKGROUND_OPTIONS: Array<{ value: BackgroundEffect; label: string }> = [
   { value: "blob-scatter", label: "Blob Scatter" },
   { value: "layered-peaks", label: "Layered Peaks" },
   { value: "layered-steps", label: "Layered Steps" },
+  { value: "world-map", label: "World Map" },
   { value: "none", label: "None" },
 ];
 
