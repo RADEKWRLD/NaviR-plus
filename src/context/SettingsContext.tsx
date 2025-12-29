@@ -68,15 +68,10 @@ function applyColorScheme(scheme: ColorScheme) {
 }
 
 // 初始化时直接从 localStorage 获取设置
+// 注意：主题已在 layout.tsx 的内联脚本中应用，这里只返回设置值
 function getInitialSettings(): Settings {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
-  const stored = getStoredSettings();
-  // 在初始化时就应用主题（避免闪烁）
-  if (typeof window !== 'undefined') {
-    applyTheme(stored.appearance.theme);
-    applyColorScheme(stored.appearance.colorScheme);
-  }
-  return stored;
+  return getStoredSettings();
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
