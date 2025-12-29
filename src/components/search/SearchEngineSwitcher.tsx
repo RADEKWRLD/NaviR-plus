@@ -20,7 +20,7 @@ export default function SearchEngineSwitcher({ selectedEngine, onEngineChange }:
 
   return (
     <div className="relative">
-      {/* Current engine display - icon with dropdown arrow */}
+      {/* Current engine display,icon with dropdown arrow */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-2 py-2 hover:bg-(--color-gray-light) transition-colors rounded"
