@@ -67,10 +67,24 @@ function applyColorScheme(scheme: ColorScheme) {
   document.documentElement.setAttribute('data-color-scheme', scheme);
 }
 
+// 初始化时直接从 localStorage 获取设置
+function getInitialSettings(): Settings {
+  if (typeof window === 'undefined') return DEFAULT_SETTINGS;
+  const stored = getStoredSettings();
+  // 在初始化时就应用主题（避免闪烁）
+  if (typeof window !== 'undefined') {
+    applyTheme(stored.appearance.theme);
+    applyColorScheme(stored.appearance.colorScheme);
+  }
+  return stored;
+}
+
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
+  // 使用函数初始化，直接从 localStorage 读取，无需 useEffect
+  const [settings, setSettings] = useState<Settings>(getInitialSettings);
+  // 初始化完成后就不再 loading
+  const [isLoading] = useState(false);
   const hasSyncedRef = useRef(false);
 
   // tRPC
@@ -79,26 +93,27 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     enabled: false, // 手动触发
   });
 
+  // 使用 ref 保存 mutation，避免依赖问题
+  const saveMutationRef = useRef(saveMutation);
+  const refetchSettingsRef = useRef(refetchSettings);
+
+  // 保持 ref 与最新值同步（在 effect 中更新）
+  useEffect(() => {
+    saveMutationRef.current = saveMutation;
+    refetchSettingsRef.current = refetchSettings;
+  });
+
   // 判断是否已登录
   const isAuthenticated = status === 'authenticated' && !!session?.user;
 
-  // 初始化加载设置 (从 localStorage)
-  useEffect(() => {
-    const stored = getStoredSettings();
-    setSettings(stored);
-    applyTheme(stored.appearance.theme);
-    applyColorScheme(stored.appearance.colorScheme);
-    setIsLoading(false);
-  }, []);
-
   // 登录时同步: 从云端拉取数据 (云端优先)
   useEffect(() => {
-    if (isAuthenticated && !hasSyncedRef.current && !isLoading) {
+    if (isAuthenticated && !hasSyncedRef.current) {
       const syncOnLogin = async () => {
         hasSyncedRef.current = true;
 
         try {
-          const result = await refetchSettings();
+          const result = await refetchSettingsRef.current();
           if (result.data) {
             // 云端有数据，使用云端数据覆盖本地
             setSettings(result.data);
@@ -108,7 +123,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
           } else {
             // 云端没有数据，将本地数据上传到云端
             const localSettings = getStoredSettings();
-            await saveMutation.mutateAsync(localSettings);
+            await saveMutationRef.current.mutateAsync(localSettings);
           }
         } catch (error) {
           console.error('Settings sync on login failed:', error);
@@ -117,7 +132,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
       syncOnLogin();
     }
-  }, [isAuthenticated, isLoading, refetchSettings, saveMutation]);
+  }, [isAuthenticated]);
 
   // 登出时重置同步状态
   useEffect(() => {
@@ -140,14 +155,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const syncToCloud = useCallback(
     (newSettings: Settings) => {
       if (isAuthenticated) {
-        saveMutation.mutate(newSettings, {
+        saveMutationRef.current.mutate(newSettings, {
           onError: (error) => {
             console.error('Failed to sync settings:', error);
           },
         });
       }
     },
-    [isAuthenticated, saveMutation]
+    [isAuthenticated]
   );
 
   const updateAppearance = useCallback(

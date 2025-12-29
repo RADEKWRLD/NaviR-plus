@@ -14,7 +14,7 @@ const settingsSchema = z.object({
     colorScheme: z.enum(['orange', 'blue', 'green', 'purple', 'pink', 'red', 'cyan', 'yellow', 'indigo', 'teal', 'amber', 'slate']),
   }),
   search: z.object({
-    defaultEngine: z.enum(['google', 'bing', 'baidu', 'bingcn', 'github', 'zhihu', 'bilibili']),
+    defaultEngine: z.enum(['google', 'bing', 'baidu', 'bingcn', 'github', 'zhihu', 'bilibili', 'duckduckgo', 'yandex']),
     openInNewTab: z.boolean(),
   }),
   bookmarks: z.object({
@@ -45,7 +45,7 @@ export const settingsRouter = router({
         colorScheme: s.colorScheme as 'orange' | 'blue' | 'green' | 'purple' | 'pink' | 'red' | 'cyan' | 'yellow' | 'indigo' | 'teal' | 'amber' | 'slate',
       },
       search: {
-        defaultEngine: s.defaultEngine as 'google' | 'bing' | 'baidu' | 'bingcn' | 'github' | 'zhihu' | 'bilibili',
+        defaultEngine: s.defaultEngine as 'google' | 'bing' | 'baidu' | 'bingcn' | 'github' | 'zhihu' | 'bilibili' | 'duckduckgo' | 'yandex',
         openInNewTab: s.openInNewTab,
       },
       bookmarks: {
