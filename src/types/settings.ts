@@ -37,7 +37,9 @@ export type SearchEngineId =
   | 'bingcn'
   | 'github'
   | 'zhihu'
-  | 'bilibili';
+  | 'bilibili'
+  | 'duckduckgo'
+  | 'yandex';
 
 // 外观设置
 export interface AppearanceSettings {

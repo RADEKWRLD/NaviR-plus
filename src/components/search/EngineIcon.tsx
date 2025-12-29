@@ -60,6 +60,27 @@ export default function EngineIcon({ engine, size = 20 }: EngineIconProps) {
         </svg>
       );
 
+    case 'duckduckgo':
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="#DE5833"/>
+          <ellipse cx="12" cy="13" rx="6" ry="5" fill="white"/>
+          <ellipse cx="10" cy="11" rx="2" ry="2.5" fill="#2D4F8E"/>
+          <circle cx="10.5" cy="10.5" r="0.8" fill="white"/>
+          <ellipse cx="15" cy="12" rx="1.5" ry="2" fill="#2D4F8E"/>
+          <path d="M8 16c1.5 1 4.5 1 6 0" stroke="#DE5833" strokeWidth="1.5" strokeLinecap="round"/>
+          <ellipse cx="14" cy="8" rx="3" ry="2" fill="#65BC46"/>
+        </svg>
+      );
+
+    case 'yandex':
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#FF0000"/>
+          <path d="M13.5 18V9.5L16 6h-2.5l-3 4.5V6H8v12h2.5v-5l3.5 5h2.5l-3-4.5V18z" fill="white"/>
+        </svg>
+      );
+
     default:
       return null;
   }

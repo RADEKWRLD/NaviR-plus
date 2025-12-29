@@ -49,5 +49,19 @@ export const SEARCH_ENGINES: SearchEngine[] = [
     icon: 'bilibili',
     searchUrl: 'https://search.bilibili.com/all?keyword={query}',
     color: '#00A1D6'
+  },
+  {
+    id: 'duckduckgo',
+    name: 'DuckDuckGo',
+    icon: 'duckduckgo',
+    searchUrl: 'https://duckduckgo.com/?q={query}',
+    color: '#DE5833'
+  },
+  {
+    id: 'yandex',
+    name: 'Yandex',
+    icon: 'yandex',
+    searchUrl: 'https://yandex.com/search/?text={query}',
+    color: '#FF0000'
   }
 ];
