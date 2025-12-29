@@ -6,6 +6,7 @@ import { Bookmark } from '@/types/bookmark';
 import { useBookmarks } from '@/context/BookmarkContext';
 import { useSettings } from '@/context/SettingsContext';
 import BookmarkContextMenu from './BookmarkContextMenu';
+import FaviconImage from '@/components/common/FaviconImage';
 
 interface BookmarkItemProps {
   bookmark: Bookmark;
@@ -79,15 +80,6 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
     }
   }, []);
 
-  const getFaviconUrl = (url: string) => {
-    try {
-      const urlObj = new URL(url);
-      return `https://api.freejk.com/gongju/favicon/?url=${urlObj.origin}/`;
-    } catch {
-      return '';
-    }
-  };
-
   return (
     <>
       <div
@@ -105,13 +97,9 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
           ${isDragging ? 'shadow-2xl scale-105 border-(--color-accent) cursor-grabbing' : 'cursor-grab'}
         `}
       >
-        <img
-          src={getFaviconUrl(bookmark.url)}
-          alt=""
+        <FaviconImage
+          url={bookmark.url}
           className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain pointer-events-none"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
         />
 
         {settings.bookmarks.showTitle && (
