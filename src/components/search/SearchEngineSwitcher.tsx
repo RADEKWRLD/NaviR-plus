@@ -37,7 +37,7 @@ export default function SearchEngineSwitcher({ selectedEngine, onEngineChange }:
         </svg>
       </button>
 
-      {/* Dropdown menu - with icons */}
+      {/* Dropdown menu - with icons！ */}
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
