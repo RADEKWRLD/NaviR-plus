@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useLayoutEffect,
   useCallback,
   useRef,
   ReactNode,
@@ -68,7 +69,6 @@ function applyColorScheme(scheme: ColorScheme) {
 }
 
 // 初始化时直接从 localStorage 获取设置
-// 注意：主题已在 layout.tsx 的内联脚本中应用，这里只返回设置值
 function getInitialSettings(): Settings {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
   return getStoredSettings();
@@ -81,6 +81,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   // 初始化完成后就不再 loading
   const [isLoading] = useState(false);
   const hasSyncedRef = useRef(false);
+
+  // 立即从本地应用主题（在绘制前执行，防止闪烁）
+  useLayoutEffect(() => {
+    const stored = getStoredSettings();
+    applyTheme(stored.appearance.theme);
+    applyColorScheme(stored.appearance.colorScheme);
+    document.documentElement.classList.add('theme-ready');
+  }, []);
 
   // tRPC
   const saveMutation = trpc.settings.save.useMutation();
@@ -101,20 +109,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   // 判断是否已登录
   const isAuthenticated = status === 'authenticated' && !!session?.user;
 
-  // 登录时同步: 从云端拉取数据 (云端优先)
+  // 登录时同步: 本地优先，后台拉取云端数据
   useEffect(() => {
     if (isAuthenticated && !hasSyncedRef.current) {
-      const syncOnLogin = async () => {
-        hasSyncedRef.current = true;
+      hasSyncedRef.current = true;
 
+      const syncOnLogin = async () => {
         try {
           const result = await refetchSettingsRef.current();
           if (result.data) {
-            // 云端有数据，使用云端数据覆盖本地
+            // 云端有数据，静默更新状态（不重新应用主题，避免闪烁）
             setSettings(result.data);
             saveSettings(result.data);
-            applyTheme(result.data.appearance.theme);
-            applyColorScheme(result.data.appearance.colorScheme);
           } else {
             // 云端没有数据，将本地数据上传到云端
             const localSettings = getStoredSettings();

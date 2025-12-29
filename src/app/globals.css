@@ -8,9 +8,12 @@
   --color-gray-mid: #999999;
   --color-gray-dark: #333333;
 
-  /* Accent Color - Warm Orange */
+  /* Accent Color - Warm Orange (默认值，防止 SVG 在配色方案加载前变黑) */
   --color-accent: #FF6B35;
   --color-accent-hover: #E85A2B;
+  --color-accent-light: #FFB798;
+  --color-accent-dark: #AB2B00;
+  --color-accent-mid: #D54B1B;
 
   /* Background */
   --bg-main: #FFFFFF;
@@ -29,6 +32,23 @@
   /* Legacy variables for compatibility */
   --background: var(--bg-main);
   --foreground: var(--text-primary);
+}
+
+/* 系统深色模式 - 作为初始状态防止闪烁 */
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.theme-ready) {
+    --color-black: #ffffff;
+    --color-white: #1a1a1a;
+    --color-gray-light: #2a2a2a;
+    --color-gray-mid: #888888;
+    --color-gray-dark: #cccccc;
+    --bg-main: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #888888;
+    --border-default: #ffffff;
+  }
 }
 
 body {
