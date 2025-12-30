@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { hashPassword } from "@/lib/auth/passwordUtils";
 import FormInput from "./FormInput";
 import { trpc } from "@/lib/trpc/client";
+import { TRPCClientError } from "@trpc/client";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -53,7 +54,11 @@ export default function RegisterForm() {
         router.push("/");
       }
     } catch (err) {
-      setError(`Registration failed, please try again：${err}`);
+      if (err instanceof TRPCClientError) {
+        setError(err.message);
+      } else {
+        setError("Registration failed, please try again");
+      }
     } finally {
       setIsLoading(false);
     }

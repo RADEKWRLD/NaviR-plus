@@ -1,8 +1,10 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, publicProcedure } from '../index';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { sendWelcomeEmail } from '@/lib/email/send-welcome-email';
 
 export const userRouter = router({
   // 根据 ID 查询
@@ -21,7 +23,31 @@ export const userRouter = router({
       password: z.string(),
     }))
     .mutation(async ({ input }) => {
-      return db.insert(users).values(input).returning();
+      try {
+        const newUser = await db.insert(users).values(input).returning();
+
+        // 异步发送欢迎邮件（不阻塞注册流程）
+        void sendWelcomeEmail({
+          to: input.email,
+          userName: input.name,
+        }).catch((error) => {
+          console.error('[Email] Failed to send welcome email:', error);
+        });
+
+        return newUser;
+      } catch (error: unknown) {
+        const dbError = error as { code?: string };
+        if (dbError.code === '23505') {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: 'Email already registered',
+          });
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Registration failed, please try again',
+        });
+      }
     }),
 
   // 更新用户

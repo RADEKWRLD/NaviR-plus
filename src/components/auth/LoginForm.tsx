@@ -29,8 +29,8 @@ export default function LoginForm() {
       } else {
         router.push("/");
       }
-    } catch (err) {
-      setError(`Login failed, please try againe：${err}`);
+    } catch {
+      setError("Login failed, please try again");
     } finally {
       setIsLoading(false);
     }
