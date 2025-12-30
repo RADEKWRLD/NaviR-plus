@@ -5,14 +5,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: 'https://navir.icu',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1,
-    },
-    {
-      url: 'https://navir.icu/auth',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
     },
   ]
 }
