@@ -165,7 +165,7 @@ export default function PrivacyPage() {
                 If you have any questions about this Privacy Policy, please
                 contact us at:{" "}
                 <a
-                  href="mailto:privacy@navir.icu"
+                  href="mailto:a1691357101@gmail.com"
                   className="text-accent hover:underline font-bold"
                 >
                   a1691357101@gmail.com
