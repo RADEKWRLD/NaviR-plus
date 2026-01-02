@@ -129,7 +129,26 @@ export default function PrivacyPage() {
                 className="text-2xl font-bold mb-4 uppercase"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
-                4. Chrome Extension
+                4. Website Data Fetching
+              </h2>
+              <p className="leading-relaxed">
+                When you add a bookmark, NaviR may fetch the website&apos;s title
+                and favicon (icon) to enhance your bookmark display. This data is:
+              </p>
+              <ul className="list-disc list-inside mt-4 space-y-2">
+                <li>Used solely for displaying your bookmarks</li>
+                <li>Not stored on our servers beyond your bookmark data</li>
+                <li>Not shared with any third parties</li>
+                <li>Not used for tracking or analytics purposes</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2
+                className="text-2xl font-bold mb-4 uppercase"
+                style={{ fontFamily: "var(--font-oxanium)" }}
+              >
+                5. Chrome Extension
               </h2>
               <p className="leading-relaxed">
                 The NaviR Chrome extension stores authentication tokens locally
@@ -145,7 +164,7 @@ export default function PrivacyPage() {
                 className="text-2xl font-bold mb-4 uppercase"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
-                5. Your Rights
+                6. Your Rights
               </h2>
               <ul className="list-disc list-inside space-y-2">
                 <li>Access and download your data at any time</li>
@@ -159,7 +178,7 @@ export default function PrivacyPage() {
                 className="text-2xl font-bold mb-4 uppercase"
                 style={{ fontFamily: "var(--font-oxanium)" }}
               >
-                6. Contact Us
+                7. Contact Us
               </h2>
               <p className="leading-relaxed">
                 If you have any questions about this Privacy Policy, please
