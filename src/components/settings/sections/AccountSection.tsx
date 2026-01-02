@@ -226,7 +226,7 @@ export default function AccountSection() {
         {/* Delete Account - Danger Zone */}
         <div
           className="space-y-4 p-6 border-b-[3px] border-red-500 bg-red-50 dark:bg-red-900/20"
-          
+
         >
           <h4
             className="font-bold uppercase text-red-600"
@@ -273,6 +273,17 @@ export default function AccountSection() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Privacy Policy Link */}
+        <div className="p-6 text-center">
+          <a
+            href="/privacy"
+            className="text-sm text-(--text-secondary) hover:text-(--color-accent) underline transition-colors"
+            style={{ fontFamily: "var(--font-oxanium)" }}
+          >
+            Privacy Policy
+          </a>
         </div>
       </div>
     </div>
