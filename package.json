@@ -11,10 +11,14 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "email:dev": "email dev --dir src/lib/email/templates"
+    "email:dev": "email dev --dir src/lib/email/templates",
+    "ext:dev": "cd extension && npm run dev",
+    "ext:build": "cd extension && npm run build",
+    "ext:install": "cd extension && npm install"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
+    "jose": "^6.0.11",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@neondatabase/serverless": "^1.0.2",
