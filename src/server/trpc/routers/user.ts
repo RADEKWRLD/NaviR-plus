@@ -5,6 +5,7 @@ import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { sendWelcomeEmail } from '@/lib/email/send-welcome-email';
+import { hashPassword } from '@/lib/auth/passwordUtils';
 
 export const userRouter = router({
   // 根据 ID 查询
@@ -20,11 +21,16 @@ export const userRouter = router({
     .input(z.object({
       name: z.string(),
       email: z.string().email(),
-      password: z.string(),
+      password: z.string().min(6),
     }))
     .mutation(async ({ input }) => {
       try {
-        const newUser = await db.insert(users).values(input).returning();
+        // 用 bcrypt 哈希密码后存储
+        const hashedPassword = await hashPassword(input.password);
+        const newUser = await db.insert(users).values({
+          ...input,
+          password: hashedPassword,
+        }).returning();
 
         // 异步发送欢迎邮件（不阻塞注册流程）
         void sendWelcomeEmail({

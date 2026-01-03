@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { hashPassword } from "@/lib/auth/passwordUtils";
 import FormInput from "./FormInput";
 import { trpc } from "@/lib/trpc/client";
 import { TRPCClientError } from "@trpc/client";
@@ -36,12 +35,11 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const hashedPassword = await hashPassword(password);
-
+      // 发送明文密码，后端会用 bcrypt 哈希
       await createUser.mutateAsync({
         name,
         email,
-        password: hashedPassword,
+        password,
       });
 
       const result = await signIn("credentials", {
