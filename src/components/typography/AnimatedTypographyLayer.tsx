@@ -36,14 +36,19 @@ interface AnimatedWord {
 
 export default function AnimatedTypographyLayer() {
   const [activeWords, setActiveWords] = useState<AnimatedWord[]>([]);
+  const activeCountRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    activeCountRef.current = activeWords.length;
+  }, [activeWords.length]);
+
   const spawnWord = useCallback(() => {
-    if (activeWords.length >= 1) return;
+    if (activeCountRef.current >= 1) return;
 
     const word = ANIMATED_WORDS[Math.floor(Math.random() * ANIMATED_WORDS.length)];
-    const x = gsap.utils.random(10, 80);  // 10%-80% width
-    const y = gsap.utils.random(10, 80);  // 10%-80% height
+    const x = gsap.utils.random(10, 80);
+    const y = gsap.utils.random(10, 80);
     const color = COLORS[Math.floor(Math.random() * COLORS.length)];
 
     const newWord: AnimatedWord = {
@@ -56,12 +61,10 @@ export default function AnimatedTypographyLayer() {
 
     setActiveWords((prev) => [...prev, newWord]);
 
-    // Remove after animation completes
-    // Type-in (~0.1s * avg 8 chars = 0.8s) + hold (1.5s) + delete (~0.05s * 8 = 0.4s) = ~2.7s + buffer
     setTimeout(() => {
       setActiveWords((prev) => prev.filter((w) => w.id !== newWord.id));
     }, 3500);
-  }, [activeWords.length]);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(spawnWord, 3000);
@@ -135,7 +138,6 @@ function AnimatedWord({ word }: { word: AnimatedWord }) {
         color: word.color,
         WebkitTextStroke: `2px ${word.color}`,
         paintOrder: 'stroke fill',
-        willChange: 'transform, opacity'
       }}
     >
       {word.text}

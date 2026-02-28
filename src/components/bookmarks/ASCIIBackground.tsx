@@ -34,48 +34,37 @@ export default function ASCIIBackground() {
     };
   }, [isMobile]);
 
-  // 移动端减少渲染的字符数量
   const grid = useMemo(() => {
     const chars = ['/', '\\', '|', '-', '_', '+', '=', '*', '#', '.', '~', '^', '<', '>'];
 
-    // 移动端使用更少的行列数
-    const isMobileSize = typeof window !== 'undefined' && window.innerWidth < 768;
-    const rowCount = isMobileSize ? 8 : Math.ceil(window.innerHeight / 30);
-    const colCount = isMobileSize ? 20 : Math.ceil(window.innerWidth / 10);
+    const rowCount = Math.ceil(window.innerHeight / 40);
+    const colCount = Math.ceil(window.innerWidth / 14);
 
     return Array.from({ length: rowCount }, () =>
-      Array.from({ length: colCount }, () => ({
-        char: chars[Math.floor(Math.random() * chars.length)],
-        isHighlight: Math.random() < 0.12,
-      }))
+      Array.from({ length: colCount }, () =>
+        chars[Math.floor(Math.random() * chars.length)]
+      ).join(' ')
     );
   }, []);
 
-  // 移动端完全不渲染 ASCII 背景
+// 移动端完全不渲染 ASCII 背景
   if (isMobile) {
-    return null;
+    return null; 
   }
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 scale-300">
         <div className="font-mono text-sm leading-relaxed">
-          {grid.map((row, i) => (
+          {grid.map((rowText, i) => (
             <div
               key={i}
               ref={(el) => {
                 if (el) rowsRef.current[i] = el;
               }}
-              className="flex justify-center whitespace-nowrap"
+              className="flex justify-center whitespace-nowrap text-gray-400"
             >
-              {row.map((cell, j) => (
-                <span
-                  key={j}
-                  className={cell.isHighlight ? 'text-[#FF6B35]' : 'text-gray-400'}
-                >
-                  {cell.char}
-                </span>
-              ))}
+              {rowText}
             </div>
           ))}
         </div>

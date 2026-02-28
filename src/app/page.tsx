@@ -1,20 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import GraphicBackground from '@/components/background/GraphicBackground';
-import BlobBackground from '@/components/background/BlobBackground';
-import WaveBackground from '@/components/background/WaveBackground';
-import BlobScatterBackground from '@/components/background/BlobScatterBackground';
-import LayeredPeaksBackground from '@/components/background/LayeredPeaksBackground';
-import LayeredStepsBackground from '@/components/background/LayeredStepsBackground';
-import WorldMapBackground from '@/components/background/WorldMapBackground';
-import AnimatedTypographyLayer from '@/components/typography/AnimatedTypographyLayer';
-import TypographicHero from '@/components/typography/TypographicHero';
 import ClockDisplay from '@/components/clock/ClockDisplay';
 import SearchInput from '@/components/search/SearchInput';
 import HeaderIcons from '@/components/header/HeaderIcons';
-import BookmarkModal from '@/components/bookmarks/BookmarkModal';
 import { useSettings } from '@/context/SettingsContext';
+
+const BlobBackground = dynamic(() => import('@/components/background/BlobBackground'), { ssr: false });
+const WaveBackground = dynamic(() => import('@/components/background/WaveBackground'), { ssr: false });
+const BlobScatterBackground = dynamic(() => import('@/components/background/BlobScatterBackground'), { ssr: false });
+const LayeredPeaksBackground = dynamic(() => import('@/components/background/LayeredPeaksBackground'), { ssr: false });
+const LayeredStepsBackground = dynamic(() => import('@/components/background/LayeredStepsBackground'), { ssr: false });
+const WorldMapBackground = dynamic(() => import('@/components/background/WorldMapBackground'), { ssr: false });
+const AnimatedTypographyLayer = dynamic(() => import('@/components/typography/AnimatedTypographyLayer'), { ssr: false });
+const TypographicHero = dynamic(() => import('@/components/typography/TypographicHero'), { ssr: false });
+const BookmarkModal = dynamic(() => import('@/components/bookmarks/BookmarkModal'), { ssr: false });
 
 export default function Home() {
   const [showBookmarkModal, setShowBookmarkModal] = useState(false);
@@ -71,7 +73,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent">
       {/* Background effects based on settings */}
-      <GraphicBackground />
+      {settings.appearance.showGrid && <GraphicBackground />}
       {settings.appearance.backgroundEffect === 'blob' && <BlobBackground />}
       {settings.appearance.backgroundEffect === 'wave' && <WaveBackground />}
       {settings.appearance.backgroundEffect === 'blob-scatter' && <BlobScatterBackground />}

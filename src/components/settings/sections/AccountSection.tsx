@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { useAuth } from "@/context/AuthContext";
 import { trpc } from "@/lib/trpc/client";
@@ -20,15 +20,23 @@ export default function AccountSection() {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const messageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const updateNameMutation = trpc.account.updateName.useMutation();
   const updateEmailMutation = trpc.account.updateEmail.useMutation();
   const updatePasswordMutation = trpc.account.updatePassword.useMutation();
   const deleteAccountMutation = trpc.account.deleteAccount.useMutation();
 
+  useEffect(() => {
+    return () => {
+      if (messageTimeoutRef.current) clearTimeout(messageTimeoutRef.current);
+    };
+  }, []);
+
   const showMessage = (type: "success" | "error", text: string) => {
+    if (messageTimeoutRef.current) clearTimeout(messageTimeoutRef.current);
     setMessage({ type, text });
-    setTimeout(() => setMessage(null), 3000);
+    messageTimeoutRef.current = setTimeout(() => setMessage(null), 3000);
   };
 
   const handleUpdateName = async () => {

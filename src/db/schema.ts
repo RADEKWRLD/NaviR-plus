@@ -30,6 +30,7 @@ export const settings = pgTable("settings", {
     backgroundEffect: text('background_effect').notNull().default('blob'),
     clockFormat: text('clock_format').notNull().default('24h'),
     enableBlur: boolean('enable_blur').notNull().default(false),
+    showGrid: boolean('show_grid').notNull().default(true),
     colorScheme: text('color_scheme').notNull().default('orange'),
     // 搜索设置
     defaultEngine: text('default_engine').notNull().default('google'),

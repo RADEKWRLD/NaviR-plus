@@ -11,6 +11,7 @@ const settingsSchema = z.object({
     backgroundEffect: z.enum(['blob', 'world-map', 'wave', 'blob-scatter', 'layered-peaks', 'layered-steps', 'none']),
     clockFormat: z.enum(['12h', '24h']),
     enableBlur: z.boolean(),
+    showGrid: z.boolean(),
     colorScheme: z.enum(['orange', 'blue', 'green', 'purple', 'pink', 'red', 'cyan', 'yellow', 'indigo', 'teal', 'amber', 'slate']),
   }),
   search: z.object({
@@ -42,6 +43,7 @@ export const settingsRouter = router({
         backgroundEffect: s.backgroundEffect as 'blob' | 'world-map' | 'wave' | 'blob-scatter' | 'layered-peaks' | 'layered-steps' | 'none',
         clockFormat: s.clockFormat as '12h' | '24h',
         enableBlur: s.enableBlur,
+        showGrid: s.showGrid,
         colorScheme: s.colorScheme as 'orange' | 'blue' | 'green' | 'purple' | 'pink' | 'red' | 'cyan' | 'yellow' | 'indigo' | 'teal' | 'amber' | 'slate',
       },
       search: {
@@ -73,6 +75,7 @@ export const settingsRouter = router({
             backgroundEffect: input.appearance.backgroundEffect,
             clockFormat: input.appearance.clockFormat,
             enableBlur: input.appearance.enableBlur,
+            showGrid: input.appearance.showGrid,
             colorScheme: input.appearance.colorScheme,
             defaultEngine: input.search.defaultEngine,
             openInNewTab: input.search.openInNewTab,
@@ -88,6 +91,7 @@ export const settingsRouter = router({
           backgroundEffect: input.appearance.backgroundEffect,
           clockFormat: input.appearance.clockFormat,
           enableBlur: input.appearance.enableBlur,
+          showGrid: input.appearance.showGrid,
           colorScheme: input.appearance.colorScheme,
           defaultEngine: input.search.defaultEngine,
           openInNewTab: input.search.openInNewTab,

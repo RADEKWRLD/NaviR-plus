@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { gsap } from "@/lib/gsap/config";
 import { useAuth } from "@/context/AuthContext";
 import UserIcon from "@/components/icons/UserIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
-import SettingsModal from "@/components/settings/SettingsModal";
+
+const SettingsModal = dynamic(() => import("@/components/settings/SettingsModal"), { ssr: false });
 
 export default function HeaderIcons() {
   const { isAuthenticated, user } = useAuth();

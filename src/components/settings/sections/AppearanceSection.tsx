@@ -131,6 +131,25 @@ export default function AppearanceSection() {
           </p>
         </div>
 
+        {/* Show Grid */}
+        <div className="flex items-center justify-between">
+          <div>
+            <label
+              className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+              style={{ fontFamily: "var(--font-oxanium)" }}
+            >
+              Grid Lines
+            </label>
+            <p className="text-xs text-(--text-muted) mt-1">
+              Show background grid lines
+            </p>
+          </div>
+          <SettingsToggle
+            checked={settings.appearance.showGrid}
+            onChange={(checked) => updateAppearance({ showGrid: checked })}
+          />
+        </div>
+
         {/* Enable Blur */}
         <div className="flex items-center justify-between">
           <div>

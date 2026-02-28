@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: Settings = {
     backgroundEffect: 'blob',
     clockFormat: '24h',
     enableBlur: false,
+    showGrid: true,
     colorScheme: 'orange',
   },
   search: {

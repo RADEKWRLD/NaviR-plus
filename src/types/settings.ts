@@ -47,6 +47,7 @@ export interface AppearanceSettings {
   backgroundEffect: BackgroundEffect;
   clockFormat: ClockFormat;
   enableBlur: boolean;
+  showGrid: boolean;
   colorScheme: ColorScheme;
 }
 
