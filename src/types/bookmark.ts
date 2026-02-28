@@ -1,3 +1,4 @@
+//书签schema
 export interface Bookmark {
   id: string;
   title: string;
