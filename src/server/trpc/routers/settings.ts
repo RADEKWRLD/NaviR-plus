@@ -12,6 +12,7 @@ const settingsSchema = z.object({
     clockFormat: z.enum(['12h', '24h']),
     enableBlur: z.boolean(),
     showGrid: z.boolean(),
+    showAnimatedText: z.boolean(),
     colorScheme: z.enum(['orange', 'blue', 'green', 'purple', 'pink', 'red', 'cyan', 'yellow', 'indigo', 'teal', 'amber', 'slate']),
   }),
   search: z.object({
@@ -44,6 +45,7 @@ export const settingsRouter = router({
         clockFormat: s.clockFormat as '12h' | '24h',
         enableBlur: s.enableBlur,
         showGrid: s.showGrid,
+        showAnimatedText: s.showAnimatedText,
         colorScheme: s.colorScheme as 'orange' | 'blue' | 'green' | 'purple' | 'pink' | 'red' | 'cyan' | 'yellow' | 'indigo' | 'teal' | 'amber' | 'slate',
       },
       search: {
@@ -76,6 +78,7 @@ export const settingsRouter = router({
             clockFormat: input.appearance.clockFormat,
             enableBlur: input.appearance.enableBlur,
             showGrid: input.appearance.showGrid,
+            showAnimatedText: input.appearance.showAnimatedText,
             colorScheme: input.appearance.colorScheme,
             defaultEngine: input.search.defaultEngine,
             openInNewTab: input.search.openInNewTab,
@@ -92,6 +95,7 @@ export const settingsRouter = router({
           clockFormat: input.appearance.clockFormat,
           enableBlur: input.appearance.enableBlur,
           showGrid: input.appearance.showGrid,
+          showAnimatedText: input.appearance.showAnimatedText,
           colorScheme: input.appearance.colorScheme,
           defaultEngine: input.search.defaultEngine,
           openInNewTab: input.search.openInNewTab,

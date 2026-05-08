@@ -150,6 +150,25 @@ export default function AppearanceSection() {
           />
         </div>
 
+        {/* Background Text Animation */}
+        <div className="flex items-center justify-between">
+          <div>
+            <label
+              className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+              style={{ fontFamily: "var(--font-oxanium)" }}
+            >
+              Background Text Animation
+            </label>
+            <p className="text-xs text-(--text-muted) mt-1">
+              Show animated words flashing in the background
+            </p>
+          </div>
+          <SettingsToggle
+            checked={settings.appearance.showAnimatedText}
+            onChange={(checked) => updateAppearance({ showAnimatedText: checked })}
+          />
+        </div>
+
         {/* Enable Blur */}
         <div className="flex items-center justify-between">
           <div>

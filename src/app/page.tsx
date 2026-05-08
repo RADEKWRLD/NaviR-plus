@@ -82,7 +82,7 @@ export default function Home() {
       {settings.appearance.backgroundEffect === 'world-map' && <WorldMapBackground />}
 
       {/* GSAP animated typography layer */}
-      <AnimatedTypographyLayer />
+      {settings.appearance.showAnimatedText && <AnimatedTypographyLayer />}
 
       {/* Main content - vertically centered */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8">

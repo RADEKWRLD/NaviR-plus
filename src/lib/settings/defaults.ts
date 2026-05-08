@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: Settings = {
     clockFormat: '24h',
     enableBlur: false,
     showGrid: true,
+    showAnimatedText: true,
     colorScheme: 'orange',
   },
   search: {

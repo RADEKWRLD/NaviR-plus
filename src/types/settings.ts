@@ -48,6 +48,7 @@ export interface AppearanceSettings {
   clockFormat: ClockFormat;
   enableBlur: boolean;
   showGrid: boolean;
+  showAnimatedText: boolean;
   colorScheme: ColorScheme;
 }
 
