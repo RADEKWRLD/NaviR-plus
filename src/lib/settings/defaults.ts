@@ -11,6 +11,8 @@ export const DEFAULT_SETTINGS: Settings = {
     showTypographicHero: true,
     colorScheme: 'orange',
     customBackgroundUrl: null,
+    uiVariant: 'solid',
+    uiFont: 'oxanium',
   },
   search: {
     defaultEngine: 'google',

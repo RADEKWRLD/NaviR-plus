@@ -20,6 +20,7 @@ import type {
   SettingsContextType,
   Theme,
   ColorScheme,
+  UIFont,
 } from '@/types/settings';
 import { DEFAULT_SETTINGS, SETTINGS_STORAGE_KEY } from '@/lib/settings/defaults';
 import { trpc } from '@/lib/trpc/client';
@@ -74,6 +75,11 @@ function applyBlur(enabled: boolean) {
   document.documentElement.setAttribute('data-blur', enabled ? 'on' : 'off');
 }
 
+// 应用 UI 字体（驱动 globals.css 里的 --ui-font 变量切换）
+function applyUIFont(font: UIFont) {
+  document.documentElement.setAttribute('data-ui-font', font);
+}
+
 // 初始化时直接从 localStorage 获取设置
 function getInitialSettings(): Settings {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
@@ -94,6 +100,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     applyTheme(stored.appearance.theme);
     applyColorScheme(stored.appearance.colorScheme);
     applyBlur(stored.appearance.enableBlur);
+    applyUIFont(stored.appearance.uiFont);
     document.documentElement.classList.add('theme-ready');
   }, []);
 
@@ -198,6 +205,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
           applyBlur(updates.enableBlur);
         }
 
+        // 如果更新了 UI 字体，立即应用
+        if (updates.uiFont) {
+          applyUIFont(updates.uiFont);
+        }
+
         return newSettings;
       });
     },
@@ -240,6 +252,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     applyTheme(DEFAULT_SETTINGS.appearance.theme);
     applyColorScheme(DEFAULT_SETTINGS.appearance.colorScheme);
     applyBlur(DEFAULT_SETTINGS.appearance.enableBlur);
+    applyUIFont(DEFAULT_SETTINGS.appearance.uiFont);
     syncToCloud(DEFAULT_SETTINGS);
   }, [syncToCloud]);
 

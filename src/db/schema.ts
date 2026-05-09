@@ -36,6 +36,8 @@ export const settings = pgTable("settings", {
     showTypographicHero: boolean('show_typographic_hero').notNull().default(true),
     colorScheme: text('color_scheme').notNull().default('orange'),
     customBackgroundUrl: text('custom_background_url'),
+    uiVariant: text('ui_variant').notNull().default('solid'),
+    uiFont: text('ui_font').notNull().default('oxanium'),
     // 搜索设置
     defaultEngine: text('default_engine').notNull().default('google'),
     openInNewTab: boolean('open_in_new_tab').notNull().default(true),

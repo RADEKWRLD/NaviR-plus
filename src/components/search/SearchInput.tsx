@@ -60,6 +60,9 @@ export default function SearchInput() {
     }
   };
 
+  const variant = settings.appearance.uiVariant;
+  const variantClass = `ui-search-${variant}`;
+
   return (
     <div className="relative w-[90vw] md:w-[70vw] lg:w-[50vw] flex items-center gap-2 md:gap-4">
       {/* Left bracket - appears on focus */}
@@ -70,16 +73,17 @@ export default function SearchInput() {
           opacity: 0,
           transform: 'scaleX(0)',
           transformOrigin: 'right',
-          willChange: 'transform, opacity'
+          willChange: 'transform, opacity',
+          fontFamily: 'var(--ui-font)',
         }}
       >
         (
       </div>
 
       {/* Search container - single thick border rectangle */}
-      <div className="relative border-[3px] border-(--border-default) bg-(--bg-main) flex items-stretch flex-1">
+      <div className={`relative border-[3px] border-(--border-default) bg-(--bg-main) flex items-stretch flex-1 ${variantClass}`}>
         {/* Left side - Engine switcher (square) */}
-        <div className="shrink-0 w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-r-[3px] border-(--border-default) flex items-center justify-center bg-(--bg-secondary)">
+        <div className="ui-search-engine shrink-0 w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-r-[3px] border-(--border-default) flex items-center justify-center bg-(--bg-secondary)">
           <SearchEngineSwitcher
             selectedEngine={selectedEngine}
             onEngineChange={setSelectedEngine}
@@ -95,14 +99,14 @@ export default function SearchInput() {
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder="TYPE YOUR QUERY"
-          className="flex-1 px-4 md:px-6 lg:px-8 text-base md:text-xl lg:text-2xl font-bold bg-transparent border-none outline-none placeholder-[#999999] uppercase tracking-wide text-center"
-          style={{ fontFamily: 'var(--font-oxanium)' }}
+          className="ui-search-input flex-1 px-4 md:px-6 lg:px-8 text-base md:text-xl lg:text-2xl font-bold bg-transparent border-none outline-none uppercase tracking-wide text-center"
+          style={{ fontFamily: 'var(--ui-font)' }}
         />
 
         {/* Right side - Search button (square) */}
         <button
           onClick={handleSearch}
-          className="shrink-0 w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-(--color-accent) hover:bg-(--color-accent-hover) transition-colors flex items-center justify-center border-l-[3px] border-(--border-default)"
+          className="ui-search-button shrink-0 w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-(--color-accent) hover:bg-(--color-accent-hover) transition-colors flex items-center justify-center border-l-[3px] border-(--border-default)"
           aria-label="Search"
         >
           <svg className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
@@ -120,7 +124,8 @@ export default function SearchInput() {
           opacity: 0,
           transform: 'scaleX(0)',
           transformOrigin: 'left',
-          willChange: 'transform, opacity'
+          willChange: 'transform, opacity',
+          fontFamily: 'var(--ui-font)',
         }}
       >
         )

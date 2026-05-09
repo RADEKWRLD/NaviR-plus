@@ -6,6 +6,7 @@ import { useSettings } from '@/context/SettingsContext';
 export default function ClockDisplay() {
   const [time, setTime] = useState(new Date());
   const { settings } = useSettings();
+  const variant = settings.appearance.uiVariant;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,16 +33,29 @@ export default function ClockDisplay() {
 
   const { hours, minutes, period } = formatTime();
 
+  const variantClass =
+    variant === 'glass'
+      ? 'ui-clock-glass'
+      : variant === 'minimal'
+        ? 'ui-clock-minimal'
+        : '';
+
+  const isOutline = variant === 'outline';
+  const fontStyle = { fontFamily: 'var(--ui-font)' };
+
   return (
-    <div className="text-right">
+    <div className="text-right" style={fontStyle}>
       {/* Label */}
-      <div className="text-small tracking-widest mb-2">LOCAL TIME</div>
+      <div className="text-small tracking-widest mb-2" style={fontStyle}>LOCAL TIME</div>
 
       {/* Time display - large bold numbers */}
-      <div className="text-large font-bold tabular-nums">
-        {hours}
+      <div
+        className={`text-large font-bold tabular-nums ${variantClass}`}
+        style={fontStyle}
+      >
+        <span className={isOutline ? 'text-outline' : ''}>{hours}</span>
         <span className="text-accent">:</span>
-        {minutes}
+        <span className={isOutline ? 'text-outline' : ''}>{minutes}</span>
         {period && <span className="text-medium ml-2">{period}</span>}
       </div>
     </div>

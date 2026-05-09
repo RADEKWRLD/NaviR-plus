@@ -249,3 +249,82 @@ html.dark .text-inverted {
 
 /* Blur 开关由 React inline style 控制（见 useBlurStyle in SettingsContext）。
    <html data-blur="on|off"> 仅作为 DOM 调试 marker，不再被 CSS 消费。 */
+
+/* UI Font 切换：通过 <html data-ui-font="..."> 改 --ui-font，
+   Clock 和 Search 内部用 var(--ui-font) 引用。
+   var(--font-X, fallback) 内部 fallback 是关键：万一 next/font 没加载某个字体变量，
+   不会让整条 font-family 失效回退到 body 默认（Oxanium），而是 fallback 到对应字族。 */
+:root {
+  --ui-font: var(--font-oxanium, system-ui), 'Arial', sans-serif;
+}
+html[data-ui-font="oxanium"] {
+  --ui-font: var(--font-oxanium, system-ui), 'Arial', sans-serif;
+}
+html[data-ui-font="inter"] {
+  --ui-font: var(--font-inter, ui-sans-serif), 'Helvetica', sans-serif;
+}
+html[data-ui-font="lora"] {
+  --ui-font: var(--font-lora, ui-serif), Georgia, serif;
+}
+html[data-ui-font="jetbrains-mono"] {
+  --ui-font: var(--font-jetbrains-mono, ui-monospace), 'Courier New', monospace;
+}
+html[data-ui-font="space-grotesk"] {
+  --ui-font: var(--font-space-grotesk, ui-sans-serif), 'Helvetica', sans-serif;
+}
+html[data-ui-font="bebas-neue"] {
+  --ui-font: var(--font-bebas-neue, 'Impact'), 'Arial Narrow', sans-serif;
+}
+html[data-ui-font="playfair"] {
+  --ui-font: var(--font-playfair, ui-serif), Georgia, serif;
+}
+html[data-ui-font="orbitron"] {
+  --ui-font: var(--font-orbitron, ui-sans-serif), 'Trebuchet MS', sans-serif;
+}
+
+/* Clock 变体（叠加在 base 样式上） */
+.ui-clock-glass {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5), 0 0 4px rgba(0, 0, 0, 0.25);
+}
+.ui-clock-minimal {
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+html.dark .ui-clock-glass {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7), 0 0 4px rgba(0, 0, 0, 0.4);
+}
+html.dark .ui-clock-minimal {
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Search 变体（覆盖容器背景 / 边框） */
+.ui-search-glass {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+html.dark .ui-search-glass {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.ui-search-outline {
+  background: transparent !important;
+}
+.ui-search-minimal {
+  background: transparent !important;
+  border-width: 0 0 1px 0 !important;
+}
+.ui-search-minimal > .ui-search-engine,
+.ui-search-minimal > .ui-search-button {
+  background: transparent !important;
+  border-width: 0 !important;
+}
+.ui-search-outline > .ui-search-engine {
+  background: transparent !important;
+}
+
+/* Placeholder：跟随 currentColor，避免硬编码 #999 在透明变体下与背景图打架 */
+.ui-search-input::placeholder {
+  color: currentColor;
+  opacity: 0.4;
+}

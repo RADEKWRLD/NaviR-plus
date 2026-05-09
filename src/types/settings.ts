@@ -4,6 +4,20 @@ export type Theme = 'light' | 'dark' | 'system';
 // 时钟格式
 export type ClockFormat = '12h' | '24h';
 
+// UI 风格变体（同时作用于 Clock 和 Search）
+export type UIVariant = 'solid' | 'glass' | 'outline' | 'minimal';
+
+// UI 字体（同时作用于 Clock 和 Search）
+export type UIFont =
+  | 'oxanium'
+  | 'inter'
+  | 'lora'
+  | 'jetbrains-mono'
+  | 'space-grotesk'
+  | 'bebas-neue'
+  | 'playfair'
+  | 'orbitron';
+
 // 配色方案
 export type ColorScheme =
   | 'orange'
@@ -53,6 +67,8 @@ export interface AppearanceSettings {
   showTypographicHero: boolean;
   colorScheme: ColorScheme;
   customBackgroundUrl: string | null;
+  uiVariant: UIVariant;
+  uiFont: UIFont;
 }
 
 // 搜索设置

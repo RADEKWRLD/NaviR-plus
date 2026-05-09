@@ -4,7 +4,7 @@ import { useSettings } from "@/context/SettingsContext";
 import SettingsSelect from "../controls/SettingsSelect";
 import SettingsToggle from "../controls/SettingsToggle";
 import CustomBackgroundUploader from "../CustomBackgroundUploader";
-import type { Theme, BackgroundEffect, ClockFormat, ColorScheme } from "@/types/settings";
+import type { Theme, BackgroundEffect, ClockFormat, ColorScheme, UIVariant, UIFont } from "@/types/settings";
 
 const THEME_OPTIONS: Array<{ value: Theme; label: string }> = [
   { value: "light", label: "Light" },
@@ -26,6 +26,24 @@ const BACKGROUND_OPTIONS: Array<{ value: BackgroundEffect; label: string }> = [
 const CLOCK_OPTIONS: Array<{ value: ClockFormat; label: string }> = [
   { value: "24h", label: "24-Hour (14:30)" },
   { value: "12h", label: "12-Hour (2:30 PM)" },
+];
+
+const UI_VARIANT_OPTIONS: Array<{ value: UIVariant; label: string }> = [
+  { value: "solid", label: "Solid (Default)" },
+  { value: "glass", label: "Glass" },
+  { value: "outline", label: "Outline" },
+  { value: "minimal", label: "Minimal" },
+];
+
+const UI_FONT_OPTIONS: Array<{ value: UIFont; label: string; cssVar: string }> = [
+  { value: "oxanium",        label: "Oxanium",         cssVar: "var(--font-oxanium), Arial, sans-serif" },
+  { value: "inter",          label: "Inter",           cssVar: "var(--font-inter), Helvetica, sans-serif" },
+  { value: "lora",           label: "Lora",            cssVar: "var(--font-lora), Georgia, serif" },
+  { value: "jetbrains-mono", label: "JetBrains Mono",  cssVar: "var(--font-jetbrains-mono), 'Courier New', monospace" },
+  { value: "space-grotesk",  label: "Space Grotesk",   cssVar: "var(--font-space-grotesk), Helvetica, sans-serif" },
+  { value: "bebas-neue",     label: "Bebas Neue",      cssVar: "var(--font-bebas-neue), Impact, sans-serif" },
+  { value: "playfair",       label: "Playfair",        cssVar: "var(--font-playfair), Georgia, serif" },
+  { value: "orbitron",       label: "Orbitron",        cssVar: "var(--font-orbitron), 'Trebuchet MS', sans-serif" },
 ];
 
 const COLOR_SCHEMES: Array<{ value: ColorScheme; label: string; color: string }> = [
@@ -89,6 +107,61 @@ export default function AppearanceSection() {
           {settings.appearance.backgroundEffect === "custom" && (
             <CustomBackgroundUploader />
           )}
+        </div>
+
+        {/* UI Style (applies to clock + search box) */}
+        <div className="space-y-3">
+          <label
+            className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+            style={{ fontFamily: "var(--font-oxanium)" }}
+          >
+            UI Style
+          </label>
+          <p className="text-xs text-(--text-muted) -mt-1">
+            Visual treatment for the clock and search box
+          </p>
+          <SettingsSelect
+            options={UI_VARIANT_OPTIONS}
+            value={settings.appearance.uiVariant}
+            onChange={(value) =>
+              updateAppearance({ uiVariant: value as UIVariant })
+            }
+          />
+        </div>
+
+        {/* UI Font */}
+        <div className="space-y-3">
+          <label
+            className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+            style={{ fontFamily: "var(--font-oxanium)" }}
+          >
+            UI Font
+          </label>
+          <p className="text-xs text-(--text-muted) -mt-1">
+            Font for the clock and search box
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {UI_FONT_OPTIONS.map((font) => (
+              <button
+                key={font.value}
+                onClick={() => updateAppearance({ uiFont: font.value })}
+                className={`p-4 border-2 transition-all text-left cursor-pointer ${
+                  settings.appearance.uiFont === font.value
+                    ? "border-(--border-default) ring-2 ring-(--border-default) ring-offset-2 ring-offset-(--bg-main)"
+                    : "border-(--text-muted) hover:border-(--border-default)"
+                }`}
+                style={{ fontFamily: font.cssVar }}
+              >
+                <div className="text-2xl font-bold tabular-nums leading-none">11:44</div>
+                <div
+                  className="text-xs uppercase tracking-wide mt-2 text-(--text-muted)"
+                  style={{ fontFamily: "var(--font-oxanium)" }}
+                >
+                  {font.label}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Clock Format */}
