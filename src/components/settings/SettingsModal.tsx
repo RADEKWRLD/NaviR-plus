@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from '@/lib/gsap/config';
+import { useBlurStyle } from '@/context/SettingsContext';
 import SettingsSidebar from './SettingsSidebar';
 import SettingsContent from './SettingsContent';
 import type { SettingsCategory } from '@/types/settings';
@@ -16,6 +17,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [activeCategory, setActiveCategory] =
     useState<SettingsCategory>('appearance');
+  const blurStyle = useBlurStyle();
 
   useEffect(() => {
     if (isOpen && modalRef.current && overlayRef.current) {
@@ -49,12 +51,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       ref={overlayRef}
       className="fixed inset-0 bg-black/10 backdrop-blur-md z-50 flex items-center justify-center p-4"
       onClick={onClose}
+      style={blurStyle}
     >
       <div
         ref={modalRef}
-        className="w-full max-w-[800px] h-[85vh] md:h-[500px] bg-(--bg-main)/95 backdrop-blur-lg border-[3px] border-(--border-default) overflow-hidden rounded-2xl md:rounded-4xl flex flex-col md:flex-row p-3 md:p-4"
+        className="w-full max-w-[800px] h-[85vh] md:h-[500px] bg-(--bg-main) border-[3px] border-(--border-default) overflow-hidden rounded-2xl md:rounded-4xl flex flex-col md:flex-row p-3 md:p-4"
         onClick={(e) => e.stopPropagation()}
-        style={{padding:"1rem"}}
+        style={{ padding: "1rem" }}
       >
         {/* 左侧/顶部导航 */}
         <SettingsSidebar

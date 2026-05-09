@@ -246,3 +246,6 @@ html.dark .text-inverted {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Blur 开关由 React inline style 控制（见 useBlurStyle in SettingsContext）。
+   <html data-blur="on|off"> 仅作为 DOM 调试 marker，不再被 CSS 消费。 */

@@ -3,17 +3,27 @@ import { router, protectedProcedure } from '../index';
 import { db } from '@/db';
 import { bookmarks } from '@/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
+import { deleteIconIfOurs } from '@/lib/r2';
 
 // 书签输入验证 schema
 const bookmarkSchema = z.object({
   clientId: z.string(),
   title: z.string().min(1),
   url: z.string(),
+  iconUrl: z.string().nullable().optional(),
   position: z.number().int().min(0),
   createdAt: z.string().optional(),
 });
 
 const bookmarkArraySchema = z.array(bookmarkSchema);
+
+async function safeDeleteIcon(url: string | null | undefined) {
+  try {
+    await deleteIconIfOurs(url);
+  } catch (err) {
+    console.error('Icon cleanup failed:', err);
+  }
+}
 
 export const bookmarkRouter = router({
   // 获取当前用户的所有书签
@@ -24,11 +34,11 @@ export const bookmarkRouter = router({
       .where(eq(bookmarks.userId, ctx.userId))
       .orderBy(asc(bookmarks.position));
 
-    // 转换为客户端格式
     return result.map((b) => ({
       id: b.clientId,
       title: b.title,
       url: b.url,
+      iconUrl: b.iconUrl,
       position: b.position,
       createdAt: b.createdAt?.toISOString() || new Date().toISOString(),
     }));
@@ -38,10 +48,17 @@ export const bookmarkRouter = router({
   syncAll: protectedProcedure
     .input(bookmarkArraySchema)
     .mutation(async ({ ctx, input }) => {
-      // 1. 删除该用户的所有现有书签
+      const oldRows = await db
+        .select()
+        .from(bookmarks)
+        .where(eq(bookmarks.userId, ctx.userId));
+
+      const newIconUrls = new Set(
+        input.map((b) => b.iconUrl).filter((u): u is string => !!u),
+      );
+
       await db.delete(bookmarks).where(eq(bookmarks.userId, ctx.userId));
 
-      // 2. 批量插入新书签
       if (input.length > 0) {
         await db.insert(bookmarks).values(
           input.map((b) => ({
@@ -49,12 +66,19 @@ export const bookmarkRouter = router({
             clientId: b.clientId,
             title: b.title,
             url: b.url,
+            iconUrl: b.iconUrl ?? null,
             position: b.position,
             createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
             updatedAt: new Date(),
-          }))
+          })),
         );
       }
+
+      await Promise.all(
+        oldRows
+          .filter((r) => r.iconUrl && !newIconUrls.has(r.iconUrl))
+          .map((r) => safeDeleteIcon(r.iconUrl)),
+      );
 
       return { success: true, count: input.length };
     }),
@@ -70,6 +94,7 @@ export const bookmarkRouter = router({
           clientId: input.clientId,
           title: input.title,
           url: input.url,
+          iconUrl: input.iconUrl ?? null,
           position: input.position,
           createdAt: input.createdAt ? new Date(input.createdAt) : new Date(),
           updatedAt: new Date(),
@@ -80,6 +105,7 @@ export const bookmarkRouter = router({
         id: result.clientId,
         title: result.title,
         url: result.url,
+        iconUrl: result.iconUrl,
         position: result.position,
         createdAt: result.createdAt?.toISOString() || new Date().toISOString(),
       };
@@ -92,30 +118,42 @@ export const bookmarkRouter = router({
         clientId: z.string(),
         title: z.string().min(1).optional(),
         url: z.string().optional(),
-      })
+        iconUrl: z.string().nullable().optional(),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { clientId, ...data } = input;
+      const [old] = await db
+        .select()
+        .from(bookmarks)
+        .where(
+          and(eq(bookmarks.userId, ctx.userId), eq(bookmarks.clientId, input.clientId)),
+        );
+      if (!old) {
+        throw new Error('Bookmark not found');
+      }
+
+      const { clientId, ...patch } = input;
 
       const [result] = await db
         .update(bookmarks)
         .set({
-          ...data,
+          ...patch,
           updatedAt: new Date(),
         })
         .where(
-          and(eq(bookmarks.userId, ctx.userId), eq(bookmarks.clientId, clientId))
+          and(eq(bookmarks.userId, ctx.userId), eq(bookmarks.clientId, clientId)),
         )
         .returning();
 
-      if (!result) {
-        throw new Error('Bookmark not found');
+      if ('iconUrl' in input && old.iconUrl !== input.iconUrl) {
+        await safeDeleteIcon(old.iconUrl);
       }
 
       return {
         id: result.clientId,
         title: result.title,
         url: result.url,
+        iconUrl: result.iconUrl,
         position: result.position,
         createdAt: result.createdAt?.toISOString() || new Date().toISOString(),
       };
@@ -125,14 +163,23 @@ export const bookmarkRouter = router({
   delete: protectedProcedure
     .input(z.object({ clientId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const [old] = await db
+        .select()
+        .from(bookmarks)
+        .where(
+          and(eq(bookmarks.userId, ctx.userId), eq(bookmarks.clientId, input.clientId)),
+        );
+
       await db
         .delete(bookmarks)
         .where(
           and(
             eq(bookmarks.userId, ctx.userId),
-            eq(bookmarks.clientId, input.clientId)
-          )
+            eq(bookmarks.clientId, input.clientId),
+          ),
         );
+
+      if (old) await safeDeleteIcon(old.iconUrl);
 
       return { success: true };
     }),
@@ -144,11 +191,10 @@ export const bookmarkRouter = router({
         z.object({
           clientId: z.string(),
           position: z.number().int().min(0),
-        })
-      )
+        }),
+      ),
     )
     .mutation(async ({ ctx, input }) => {
-      // 并行更新所有书签位置
       await Promise.all(
         input.map((item) =>
           db
@@ -157,10 +203,10 @@ export const bookmarkRouter = router({
             .where(
               and(
                 eq(bookmarks.userId, ctx.userId),
-                eq(bookmarks.clientId, item.clientId)
-              )
-            )
-        )
+                eq(bookmarks.clientId, item.clientId),
+              ),
+            ),
+        ),
       );
 
       return { success: true };

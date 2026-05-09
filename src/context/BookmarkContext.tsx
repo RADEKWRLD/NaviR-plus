@@ -8,7 +8,7 @@ import { trpc } from '@/lib/trpc/client';
 interface BookmarkContextType {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => void;
-  updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => void;
+  updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url' | 'iconUrl'>>) => void;
   deleteBookmark: (id: string) => void;
   reorderBookmarks: (activeId: string, overId: string) => void;
   isSyncing: boolean;
@@ -128,6 +128,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
                   clientId: b.id,
                   title: b.title,
                   url: b.url,
+                  iconUrl: b.iconUrl ?? null,
                   position: b.position,
                   createdAt: b.createdAt,
                 }))
@@ -178,6 +179,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
             clientId: newBookmark.id,
             title: newBookmark.title,
             url: newBookmark.url,
+            iconUrl: newBookmark.iconUrl ?? null,
             position: newBookmark.position,
             createdAt: newBookmark.createdAt,
           },
@@ -195,7 +197,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
 
   // 更新书签
   const updateBookmark = useCallback(
-    (id: string, data: Partial<Pick<Bookmark, 'title' | 'url'>>) => {
+    (id: string, data: Partial<Pick<Bookmark, 'title' | 'url' | 'iconUrl'>>) => {
       setBookmarks((prev) => prev.map((b) => (b.id === id ? { ...b, ...data } : b)));
 
       if (isAuthenticated) {

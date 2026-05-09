@@ -9,6 +9,7 @@ import {
   useCallback,
   useRef,
   ReactNode,
+  type CSSProperties,
 } from 'react';
 import { useSession } from 'next-auth/react';
 import type {
@@ -68,6 +69,11 @@ function applyColorScheme(scheme: ColorScheme) {
   document.documentElement.setAttribute('data-color-scheme', scheme);
 }
 
+// 应用 blur 开关（在 <html> 上挂 data-blur="off" 时，全局 CSS 把 backdrop-filter 清空）
+function applyBlur(enabled: boolean) {
+  document.documentElement.setAttribute('data-blur', enabled ? 'on' : 'off');
+}
+
 // 初始化时直接从 localStorage 获取设置
 function getInitialSettings(): Settings {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
@@ -87,6 +93,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const stored = getStoredSettings();
     applyTheme(stored.appearance.theme);
     applyColorScheme(stored.appearance.colorScheme);
+    applyBlur(stored.appearance.enableBlur);
     document.documentElement.classList.add('theme-ready');
   }, []);
 
@@ -186,6 +193,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
           applyColorScheme(updates.colorScheme);
         }
 
+        // 如果更新了 blur 开关，立即应用
+        if (updates.enableBlur !== undefined) {
+          applyBlur(updates.enableBlur);
+        }
+
         return newSettings;
       });
     },
@@ -227,6 +239,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     saveSettings(DEFAULT_SETTINGS);
     applyTheme(DEFAULT_SETTINGS.appearance.theme);
     applyColorScheme(DEFAULT_SETTINGS.appearance.colorScheme);
+    applyBlur(DEFAULT_SETTINGS.appearance.enableBlur);
     syncToCloud(DEFAULT_SETTINGS);
   }, [syncToCloud]);
 
@@ -252,4 +265,18 @@ export function useSettings() {
     throw new Error('useSettings must be used within SettingsProvider');
   }
   return context;
+}
+
+const BLUR_DISABLED_STYLE: CSSProperties = {
+  backdropFilter: 'none',
+  WebkitBackdropFilter: 'none',
+};
+
+/**
+ * inline style：blur 关闭时强制覆盖 Tailwind 的 backdrop-blur-* 工具类。
+ * inline style 的 CSS specificity 最高，避免 cascade 失败的问题。
+ */
+export function useBlurStyle(): CSSProperties | undefined {
+  const { settings } = useSettings();
+  return settings.appearance.enableBlur ? undefined : BLUR_DISABLED_STYLE;
 }

@@ -52,8 +52,8 @@ export default function PrivacyPage() {
       <div className="relative z-10 flex flex-col items-center justify-center h-screen px-12 py-20 bg-transparent">
         <div
           ref={containerRef}
-          style={{padding:"1rem"}}
-          className="w-full max-w-3xl max-h-[80vh] overflow-y-auto bg-white/90 backdrop-blur-sm border-[3px] border-black p-12"
+          style={{ padding: "1rem" }}
+          className="w-full max-w-3xl max-h-[80vh] overflow-y-auto bg-white border-[3px] border-black p-12"
         >
           <h1
             className="text-5xl font-bold tracking-tight mb-8"

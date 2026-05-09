@@ -1,13 +1,14 @@
 /**
  * Favicon URL 生成工具
- * 优先使用 Google 服务，失败后回退到国内服务
+ * 主链：Favicone（多源抓取：favicon.ico + <link> + manifest icons）
+ * 兜底：国内代理服务
  */
 
-// Google Favicon 服务
-export const getGoogleFaviconUrl = (url: string, size: number = 64): string => {
+// Favicone：服务端会同时查 favicon.ico、<link> 标签和 web manifest 的 icons
+export const getFaviconeUrl = (url: string, size: number = 64): string => {
   try {
     const urlObj = new URL(url);
-    return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=${size}`;
+    return `https://favicone.com/${urlObj.hostname}?s=${size}`;
   } catch {
     return '';
   }

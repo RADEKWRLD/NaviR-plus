@@ -16,6 +16,7 @@ export const bookmarks = pgTable("bookmarks", {
     clientId: text('client_id').notNull(),  // 保持与本地 ID 一致 (如 'bm-{timestamp}')
     title: text('title').notNull(),
     url: text('url').notNull(),
+    iconUrl: text('icon_url'),
     position: integer('position').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

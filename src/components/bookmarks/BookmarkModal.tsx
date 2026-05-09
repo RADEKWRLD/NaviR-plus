@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap/config';
-import { useSettings } from '@/context/SettingsContext';
+import { useBlurStyle } from '@/context/SettingsContext';
 import BookmarkGrid from './BookmarkGrid';
 import ASCIIBackground from './ASCIIBackground';
 
@@ -14,9 +14,7 @@ interface BookmarkModalProps {
 export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const { settings } = useSettings();
-
-  const enableBlur = settings.appearance.enableBlur;
+  const blurStyle = useBlurStyle();
 
   useEffect(() => {
     if (isOpen && modalRef.current && overlayRef.current) {
@@ -46,15 +44,16 @@ export default function BookmarkModal({ isOpen, onClose }: BookmarkModalProps) {
   return (
     <div
       ref={overlayRef}
-      className={`fixed inset-0 z-50 ${enableBlur ? 'bg-black/10 backdrop-blur-md' : 'bg-black/30'}`}
+      className="fixed inset-0 z-50 bg-black/10 backdrop-blur-md"
       onClick={(e) => {
         e.stopPropagation();
         onClose();
       }}
+      style={blurStyle}
     >
       <div
         ref={modalRef}
-        className={`bookmark-modal absolute top-[10%] left-[10%] w-[80%] h-[80%] border-[3px] border-(--border-default) overflow-hidden rounded-4xl ${enableBlur ? 'bg-(--bg-main)/95 backdrop-blur-lg' : 'bg-(--bg-main)'}`}
+        className="bookmark-modal absolute top-[10%] left-[10%] w-[80%] h-[80%] border-[3px] border-(--border-default) overflow-hidden rounded-4xl bg-(--bg-main)"
         onClick={(e) => e.stopPropagation()}
       >
         <ASCIIBackground />
