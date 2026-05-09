@@ -27,6 +27,7 @@ export type BackgroundEffect =
   | 'blob-scatter'   // blob-scatter-haikei.svg
   | 'layered-peaks'  // layered-peaks-haikei.svg
   | 'layered-steps'  // layered-steps-haikei.svg
+  | 'custom'         // 用户上传的自定义图片
   | 'none';
 
 // 搜索引擎 ID
@@ -49,7 +50,9 @@ export interface AppearanceSettings {
   enableBlur: boolean;
   showGrid: boolean;
   showAnimatedText: boolean;
+  showTypographicHero: boolean;
   colorScheme: ColorScheme;
+  customBackgroundUrl: string | null;
 }
 
 // 搜索设置

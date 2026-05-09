@@ -14,6 +14,7 @@ const BlobScatterBackground = dynamic(() => import('@/components/background/Blob
 const LayeredPeaksBackground = dynamic(() => import('@/components/background/LayeredPeaksBackground'), { ssr: false });
 const LayeredStepsBackground = dynamic(() => import('@/components/background/LayeredStepsBackground'), { ssr: false });
 const WorldMapBackground = dynamic(() => import('@/components/background/WorldMapBackground'), { ssr: false });
+const CustomImageBackground = dynamic(() => import('@/components/background/CustomImageBackground'), { ssr: false });
 const AnimatedTypographyLayer = dynamic(() => import('@/components/typography/AnimatedTypographyLayer'), { ssr: false });
 const TypographicHero = dynamic(() => import('@/components/typography/TypographicHero'), { ssr: false });
 const BookmarkModal = dynamic(() => import('@/components/bookmarks/BookmarkModal'), { ssr: false });
@@ -80,6 +81,9 @@ export default function Home() {
       {settings.appearance.backgroundEffect === 'layered-peaks' && <LayeredPeaksBackground />}
       {settings.appearance.backgroundEffect === 'layered-steps' && <LayeredStepsBackground />}
       {settings.appearance.backgroundEffect === 'world-map' && <WorldMapBackground />}
+      {settings.appearance.backgroundEffect === 'custom' && settings.appearance.customBackgroundUrl && (
+        <CustomImageBackground url={settings.appearance.customBackgroundUrl} />
+      )}
 
       {/* GSAP animated typography layer */}
       {settings.appearance.showAnimatedText && <AnimatedTypographyLayer />}
@@ -97,9 +101,11 @@ export default function Home() {
       </div>
 
       {/* Typographic hero - fixed position top left */}
-      <div className="fixed top-8 left-8 md:top-8 md:left-8 z-5 pointer-events-none">
-        <TypographicHero />
-      </div>
+      {settings.appearance.showTypographicHero && (
+        <div className="fixed top-8 left-8 md:top-8 md:left-8 z-5 pointer-events-none">
+          <TypographicHero />
+        </div>
+      )}
 
       {/* Header icons - fixed position top right */}
       <div className="fixed top-4 right-4 md:top-8 md:right-8 z-20">

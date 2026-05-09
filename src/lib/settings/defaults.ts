@@ -8,7 +8,9 @@ export const DEFAULT_SETTINGS: Settings = {
     enableBlur: false,
     showGrid: true,
     showAnimatedText: true,
+    showTypographicHero: true,
     colorScheme: 'orange',
+    customBackgroundUrl: null,
   },
   search: {
     defaultEngine: 'google',

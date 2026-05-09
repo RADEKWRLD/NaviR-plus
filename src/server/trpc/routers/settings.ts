@@ -1,19 +1,30 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure } from '../index';
 import { db } from '@/db';
 import { settings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import {
+  BACKGROUND_ALLOWED_TYPES,
+  createBackgroundPresignedPutUrl,
+  deleteBackgroundIfOurs,
+  deleteBackgroundByKey,
+  verifyBackgroundObject,
+  extractBackgroundKey,
+} from '@/lib/r2';
 
 // 设置输入验证 schema
 const settingsSchema = z.object({
   appearance: z.object({
     theme: z.enum(['light', 'dark', 'system']),
-    backgroundEffect: z.enum(['blob', 'world-map', 'wave', 'blob-scatter', 'layered-peaks', 'layered-steps', 'none']),
+    backgroundEffect: z.enum(['blob', 'world-map', 'wave', 'blob-scatter', 'layered-peaks', 'layered-steps', 'custom', 'none']),
     clockFormat: z.enum(['12h', '24h']),
     enableBlur: z.boolean(),
     showGrid: z.boolean(),
     showAnimatedText: z.boolean(),
+    showTypographicHero: z.boolean(),
     colorScheme: z.enum(['orange', 'blue', 'green', 'purple', 'pink', 'red', 'cyan', 'yellow', 'indigo', 'teal', 'amber', 'slate']),
+    customBackgroundUrl: z.url().nullable(),
   }),
   search: z.object({
     defaultEngine: z.enum(['google', 'bing', 'baidu', 'bingcn', 'github', 'zhihu', 'bilibili', 'duckduckgo', 'yandex']),
@@ -41,12 +52,14 @@ export const settingsRouter = router({
     return {
       appearance: {
         theme: s.theme as 'light' | 'dark' | 'system',
-        backgroundEffect: s.backgroundEffect as 'blob' | 'world-map' | 'wave' | 'blob-scatter' | 'layered-peaks' | 'layered-steps' | 'none',
+        backgroundEffect: s.backgroundEffect as 'blob' | 'world-map' | 'wave' | 'blob-scatter' | 'layered-peaks' | 'layered-steps' | 'custom' | 'none',
         clockFormat: s.clockFormat as '12h' | '24h',
         enableBlur: s.enableBlur,
         showGrid: s.showGrid,
         showAnimatedText: s.showAnimatedText,
+        showTypographicHero: s.showTypographicHero,
         colorScheme: s.colorScheme as 'orange' | 'blue' | 'green' | 'purple' | 'pink' | 'red' | 'cyan' | 'yellow' | 'indigo' | 'teal' | 'amber' | 'slate',
+        customBackgroundUrl: s.customBackgroundUrl,
       },
       search: {
         defaultEngine: s.defaultEngine as 'google' | 'bing' | 'baidu' | 'bingcn' | 'github' | 'zhihu' | 'bilibili' | 'duckduckgo' | 'yandex',
@@ -62,14 +75,33 @@ export const settingsRouter = router({
   save: protectedProcedure
     .input(settingsSchema)
     .mutation(async ({ ctx, input }) => {
-      // 检查是否已存在
       const existing = await db
         .select()
         .from(settings)
         .where(eq(settings.userId, ctx.userId));
 
+      const newCustomUrl = input.appearance.customBackgroundUrl;
+      const oldCustomUrl = existing[0]?.customBackgroundUrl ?? null;
+
+      // 当 customBackgroundUrl 变化且新值在我们的 R2 桶里时，HeadObject 后置校验
+      if (newCustomUrl && newCustomUrl !== oldCustomUrl) {
+        const newKey = extractBackgroundKey(newCustomUrl);
+        if (newKey) {
+          const verify = await verifyBackgroundObject(newKey);
+          if (!verify.ok) {
+            await deleteBackgroundByKey(newKey);
+            const reasonMsg =
+              verify.reason === 'too_large'
+                ? '图片超出 100MB 上限'
+                : verify.reason === 'bad_type'
+                  ? '图片格式不支持'
+                  : '上传的图片不可读';
+            throw new TRPCError({ code: 'BAD_REQUEST', message: reasonMsg });
+          }
+        }
+      }
+
       if (existing.length > 0) {
-        // 更新
         await db
           .update(settings)
           .set({
@@ -79,15 +111,21 @@ export const settingsRouter = router({
             enableBlur: input.appearance.enableBlur,
             showGrid: input.appearance.showGrid,
             showAnimatedText: input.appearance.showAnimatedText,
+            showTypographicHero: input.appearance.showTypographicHero,
             colorScheme: input.appearance.colorScheme,
+            customBackgroundUrl: newCustomUrl,
             defaultEngine: input.search.defaultEngine,
             openInNewTab: input.search.openInNewTab,
             showTitle: input.bookmarks.showTitle,
             updatedAt: new Date(),
           })
           .where(eq(settings.userId, ctx.userId));
+
+        // 旧背景图与新值不同时，从 R2 删除旧文件
+        if (oldCustomUrl && oldCustomUrl !== newCustomUrl) {
+          await deleteBackgroundIfOurs(oldCustomUrl);
+        }
       } else {
-        // 插入
         await db.insert(settings).values({
           userId: ctx.userId,
           theme: input.appearance.theme,
@@ -96,13 +134,41 @@ export const settingsRouter = router({
           enableBlur: input.appearance.enableBlur,
           showGrid: input.appearance.showGrid,
           showAnimatedText: input.appearance.showAnimatedText,
+          showTypographicHero: input.appearance.showTypographicHero,
           colorScheme: input.appearance.colorScheme,
+          customBackgroundUrl: newCustomUrl,
           defaultEngine: input.search.defaultEngine,
           openInNewTab: input.search.openInNewTab,
           showTitle: input.bookmarks.showTitle,
         });
       }
 
+      return { success: true };
+    }),
+
+  // 签发自定义背景的 presigned PUT URL（R2 不支持 presigned POST）
+  getBackgroundUploadUrl: protectedProcedure
+    .input(
+      z.object({
+        contentType: z.enum(BACKGROUND_ALLOWED_TYPES),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return createBackgroundPresignedPutUrl(ctx.userId, input.contentType);
+    }),
+
+  // 清理上传到 R2 但未关联到设置的孤儿对象（save 失败的回滚）
+  cleanupOrphanBackground: protectedProcedure
+    .input(z.object({ key: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const expectedPrefix = `backgrounds/${ctx.userId}/`;
+      if (!input.key.startsWith(expectedPrefix)) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: '无权删除此对象',
+        });
+      }
+      await deleteBackgroundByKey(input.key);
       return { success: true };
     }),
 });

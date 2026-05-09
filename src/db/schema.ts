@@ -33,7 +33,9 @@ export const settings = pgTable("settings", {
     enableBlur: boolean('enable_blur').notNull().default(false),
     showGrid: boolean('show_grid').notNull().default(true),
     showAnimatedText: boolean('show_animated_text').notNull().default(true),
+    showTypographicHero: boolean('show_typographic_hero').notNull().default(true),
     colorScheme: text('color_scheme').notNull().default('orange'),
+    customBackgroundUrl: text('custom_background_url'),
     // 搜索设置
     defaultEngine: text('default_engine').notNull().default('google'),
     openInNewTab: boolean('open_in_new_tab').notNull().default(true),

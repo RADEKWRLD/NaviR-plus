@@ -3,6 +3,7 @@
 import { useSettings } from "@/context/SettingsContext";
 import SettingsSelect from "../controls/SettingsSelect";
 import SettingsToggle from "../controls/SettingsToggle";
+import CustomBackgroundUploader from "../CustomBackgroundUploader";
 import type { Theme, BackgroundEffect, ClockFormat, ColorScheme } from "@/types/settings";
 
 const THEME_OPTIONS: Array<{ value: Theme; label: string }> = [
@@ -18,6 +19,7 @@ const BACKGROUND_OPTIONS: Array<{ value: BackgroundEffect; label: string }> = [
   { value: "layered-peaks", label: "Layered Peaks" },
   { value: "layered-steps", label: "Layered Steps" },
   { value: "world-map", label: "World Map" },
+  { value: "custom", label: "Custom Image" },
   { value: "none", label: "None" },
 ];
 
@@ -84,6 +86,9 @@ export default function AppearanceSection() {
               updateAppearance({ backgroundEffect: value as BackgroundEffect })
             }
           />
+          {settings.appearance.backgroundEffect === "custom" && (
+            <CustomBackgroundUploader />
+          )}
         </div>
 
         {/* Clock Format */}
@@ -166,6 +171,25 @@ export default function AppearanceSection() {
           <SettingsToggle
             checked={settings.appearance.showAnimatedText}
             onChange={(checked) => updateAppearance({ showAnimatedText: checked })}
+          />
+        </div>
+
+        {/* Hero Badge */}
+        <div className="flex items-center justify-between">
+          <div>
+            <label
+              className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+              style={{ fontFamily: "var(--font-oxanium)" }}
+            >
+              Hero Badge
+            </label>
+            <p className="text-xs text-(--text-muted) mt-1">
+              Show the NAVIR / SEARCH · DISCOVER badge in the top-left corner
+            </p>
+          </div>
+          <SettingsToggle
+            checked={settings.appearance.showTypographicHero}
+            onChange={(checked) => updateAppearance({ showTypographicHero: checked })}
           />
         </div>
 
