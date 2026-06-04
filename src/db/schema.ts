@@ -18,6 +18,7 @@ export const bookmarks = pgTable("bookmarks", {
     url: text('url').notNull(),
     iconUrl: text('icon_url'),
     position: integer('position').notNull(),
+    pinnedToHome: boolean('pinned_to_home').notNull().default(false),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
 })
@@ -43,6 +44,8 @@ export const settings = pgTable("settings", {
     openInNewTab: boolean('open_in_new_tab').notNull().default(true),
     // 书签设置
     showTitle: boolean('show_title').notNull().default(true),
+    // 主页快捷栏（最近使用）
+    showRecentLinks: boolean('show_recent_links').notNull().default(true),
     // 时间戳
     updatedAt: timestamp('updated_at').defaultNow(),
 })

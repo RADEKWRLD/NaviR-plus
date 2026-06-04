@@ -65,19 +65,21 @@ export default function SearchInput() {
 
   return (
     <div className="relative w-[90vw] md:w-[70vw] lg:w-[50vw] flex items-center gap-2 md:gap-4">
-      {/* Left bracket - appears on focus */}
-      <div
-        ref={leftBracketRef}
-        className="text-4xl md:text-6xl lg:text-8xl font-bold leading-none hidden md:block"
-        style={{
-          opacity: 0,
-          transform: 'scaleX(0)',
-          transformOrigin: 'right',
-          willChange: 'transform, opacity',
-          fontFamily: 'var(--ui-font)',
-        }}
-      >
-        (
+      {/* Left bracket - appears on focus（wrapper 负责竖直居中，不参与 GSAP 动画） */}
+      <div className="hidden md:flex items-center justify-center h-14 md:h-16 lg:h-20 shrink-0">
+        <div
+          ref={leftBracketRef}
+          className="relative -top-[0.08em] text-4xl md:text-6xl lg:text-8xl font-bold leading-none"
+          style={{
+            opacity: 0,
+            transform: 'scaleX(0)',
+            transformOrigin: 'right',
+            willChange: 'transform, opacity',
+            fontFamily: 'var(--ui-font)',
+          }}
+        >
+          (
+        </div>
       </div>
 
       {/* Search container - single thick border rectangle */}
@@ -116,19 +118,21 @@ export default function SearchInput() {
         </button>
       </div>
 
-      {/* Right bracket - appears on focus */}
-      <div
-        ref={rightBracketRef}
-        className="text-4xl md:text-6xl lg:text-8xl font-bold leading-none hidden md:block"
-        style={{
-          opacity: 0,
-          transform: 'scaleX(0)',
-          transformOrigin: 'left',
-          willChange: 'transform, opacity',
-          fontFamily: 'var(--ui-font)',
-        }}
-      >
-        )
+      {/* Right bracket - appears on focus（wrapper 负责竖直居中，不参与 GSAP 动画） */}
+      <div className="hidden md:flex items-center justify-center h-14 md:h-16 lg:h-20 shrink-0">
+        <div
+          ref={rightBracketRef}
+          className="relative -top-[0.08em] text-4xl md:text-6xl lg:text-8xl font-bold leading-none"
+          style={{
+            opacity: 0,
+            transform: 'scaleX(0)',
+            transformOrigin: 'left',
+            willChange: 'transform, opacity',
+            fontFamily: 'var(--ui-font)',
+          }}
+        >
+          )
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Bookmark } from "@/types/bookmark";
+import { useBookmarks } from "@/context/BookmarkContext";
 import BookmarkForm from "./AddBookmarkForm";
 
 interface BookmarkContextMenuProps {
@@ -17,10 +18,16 @@ export default function BookmarkContextMenu({
   onClose,
   onDelete,
 }: BookmarkContextMenuProps) {
+  const { updateBookmark } = useBookmarks();
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+
+  const handleTogglePin = () => {
+    updateBookmark(bookmark.id, { pinnedToHome: !bookmark.pinnedToHome });
+    onClose();
   };
 
   if (isEditing) {
@@ -49,6 +56,13 @@ export default function BookmarkContextMenu({
           style={{ fontFamily: "var(--font-oxanium)" }}
         >
           Edit
+        </button>
+        <button
+          onClick={handleTogglePin}
+          className="w-full px-6 py-4 text-center font-bold uppercase text-xl hover:bg-(--color-gray-light) transition-colors border-b-2 border-(--border-default)"
+          style={{ fontFamily: "var(--font-oxanium)" }}
+        >
+          {bookmark.pinnedToHome ? "Unpin" : "Pin"}
         </button>
         <button
           onClick={onDelete}

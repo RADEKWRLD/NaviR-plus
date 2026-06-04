@@ -7,8 +7,8 @@ import { trpc } from '@/lib/trpc/client';
 
 interface BookmarkContextType {
   bookmarks: Bookmark[];
-  addBookmark: (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => void;
-  updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url' | 'iconUrl'>>) => void;
+  addBookmark: (bookmark: Omit<Bookmark, 'id' | 'createdAt' | 'position' | 'pinnedToHome'> & { pinnedToHome?: boolean }) => void;
+  updateBookmark: (id: string, data: Partial<Pick<Bookmark, 'title' | 'url' | 'iconUrl' | 'pinnedToHome'>>) => void;
   deleteBookmark: (id: string) => void;
   reorderBookmarks: (activeId: string, overId: string) => void;
   isSyncing: boolean;
@@ -21,45 +21,67 @@ const BOOKMARKS_KEY = 'navir_bookmarks';
 
 const DEFAULT_BOOKMARKS: Bookmark[] = [
   {
+    id: 'default-google',
+    title: 'Google',
+    url: 'https://www.google.com',
+    position: 0,
+    pinnedToHome: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'default-gmail',
+    title: 'Gmail',
+    url: 'https://mail.google.com',
+    position: 1,
+    pinnedToHome: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
     id: 'default-1',
     title: '哔哩哔哩',
     url: 'https://www.bilibili.com',
-    position: 0,
+    position: 2,
+    pinnedToHome: false,
     createdAt: new Date().toISOString(),
   },
   {
     id: 'default-2',
     title: 'ChatGPT',
     url: 'https://chat.openai.com',
-    position: 1,
+    position: 3,
+    pinnedToHome: false,
     createdAt: new Date().toISOString(),
   },
   {
     id: 'default-3',
     title: 'DeepSeek',
     url: 'https://chat.deepseek.com',
-    position: 2,
+    position: 4,
+    pinnedToHome: false,
     createdAt: new Date().toISOString(),
   },
   {
     id: 'default-4',
     title: '网易云音乐',
     url: 'https://music.163.com',
-    position: 3,
+    position: 5,
+    pinnedToHome: false,
     createdAt: new Date().toISOString(),
   },
   {
     id: 'default-5',
     title: 'GitHub',
     url: 'https://github.com',
-    position: 4,
+    position: 6,
+    pinnedToHome: true,
     createdAt: new Date().toISOString(),
   },
   {
     id: 'default-6',
     title: 'YouTube',
     url: 'https://www.youtube.com',
-    position: 5,
+    position: 7,
+    pinnedToHome: true,
     createdAt: new Date().toISOString(),
   },
 ];
@@ -70,7 +92,9 @@ function getLocalBookmarks(): Bookmark[] {
   const saved = localStorage.getItem(BOOKMARKS_KEY);
   if (saved) {
     try {
-      return JSON.parse(saved) as Bookmark[];
+      const parsed = JSON.parse(saved) as Bookmark[];
+      // 兼容旧数据：补齐 pinnedToHome 字段
+      return parsed.map((b) => ({ ...b, pinnedToHome: b.pinnedToHome ?? false }));
     } catch {
       return DEFAULT_BOOKMARKS;
     }
@@ -130,6 +154,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
                   url: b.url,
                   iconUrl: b.iconUrl ?? null,
                   position: b.position,
+                  pinnedToHome: b.pinnedToHome ?? false,
                   createdAt: b.createdAt,
                 }))
               );
@@ -161,9 +186,10 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
 
   // 添加书签
   const addBookmark = useCallback(
-    (data: Omit<Bookmark, 'id' | 'createdAt' | 'position'>) => {
+    (data: Omit<Bookmark, 'id' | 'createdAt' | 'position' | 'pinnedToHome'> & { pinnedToHome?: boolean }) => {
       const newBookmark: Bookmark = {
         ...data,
+        pinnedToHome: data.pinnedToHome ?? false,
         id: `bm-${Date.now()}`,
         position: bookmarks.length,
         createdAt: new Date().toISOString(),
@@ -181,6 +207,7 @@ export function BookmarkProvider({ children }: { children: ReactNode }) {
             url: newBookmark.url,
             iconUrl: newBookmark.iconUrl ?? null,
             position: newBookmark.position,
+            pinnedToHome: newBookmark.pinnedToHome,
             createdAt: newBookmark.createdAt,
           },
           {

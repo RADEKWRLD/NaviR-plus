@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: Settings = {
     customBackgroundUrl: null,
     uiVariant: 'solid',
     uiFont: 'oxanium',
+    showRecentLinks: true,
   },
   search: {
     defaultEngine: 'google',

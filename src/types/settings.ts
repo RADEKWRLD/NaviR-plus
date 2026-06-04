@@ -69,6 +69,7 @@ export interface AppearanceSettings {
   customBackgroundUrl: string | null;
   uiVariant: UIVariant;
   uiFont: UIFont;
+  showRecentLinks: boolean;
 }
 
 // 搜索设置
