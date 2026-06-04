@@ -27,6 +27,7 @@ const settingsSchema = z.object({
     customBackgroundUrl: z.url().nullable(),
     uiVariant: z.enum(['solid', 'glass', 'outline', 'minimal']),
     uiFont: z.enum(['oxanium', 'inter', 'lora', 'jetbrains-mono', 'space-grotesk', 'bebas-neue', 'playfair', 'orbitron']),
+    showRecentLinks: z.boolean(),
   }),
   search: z.object({
     defaultEngine: z.enum(['google', 'bing', 'baidu', 'bingcn', 'github', 'zhihu', 'bilibili', 'duckduckgo', 'yandex']),
@@ -64,6 +65,7 @@ export const settingsRouter = router({
         customBackgroundUrl: s.customBackgroundUrl,
         uiVariant: s.uiVariant as 'solid' | 'glass' | 'outline' | 'minimal',
         uiFont: s.uiFont as 'oxanium' | 'inter' | 'lora' | 'jetbrains-mono' | 'space-grotesk' | 'bebas-neue' | 'playfair' | 'orbitron',
+        showRecentLinks: s.showRecentLinks,
       },
       search: {
         defaultEngine: s.defaultEngine as 'google' | 'bing' | 'baidu' | 'bingcn' | 'github' | 'zhihu' | 'bilibili' | 'duckduckgo' | 'yandex',
@@ -87,20 +89,32 @@ export const settingsRouter = router({
       const newCustomUrl = input.appearance.customBackgroundUrl;
       const oldCustomUrl = existing[0]?.customBackgroundUrl ?? null;
 
+      // 实际落库的背景值（缺失引用时会被优雅置空）
+      let effectiveCustomUrl = newCustomUrl;
+      let effectiveBackgroundEffect = input.appearance.backgroundEffect;
+
       // 当 customBackgroundUrl 变化且新值在我们的 R2 桶里时，HeadObject 后置校验
       if (newCustomUrl && newCustomUrl !== oldCustomUrl) {
         const newKey = extractBackgroundKey(newCustomUrl);
         if (newKey) {
           const verify = await verifyBackgroundObject(newKey);
           if (!verify.ok) {
-            await deleteBackgroundByKey(newKey);
-            const reasonMsg =
-              verify.reason === 'too_large'
-                ? '图片超出 100MB 上限'
-                : verify.reason === 'bad_type'
-                  ? '图片格式不支持'
-                  : '上传的图片不可读';
-            throw new TRPCError({ code: 'BAD_REQUEST', message: reasonMsg });
+            if (verify.reason === 'missing') {
+              // 引用的对象已不存在（如切换数据库分支 / 被清理 / 上传未完成）：
+              // 不阻断整次保存，优雅丢弃这张背景图，其余设置照常持久化。
+              effectiveCustomUrl = null;
+              if (effectiveBackgroundEffect === 'custom') {
+                effectiveBackgroundEffect = 'none';
+              }
+            } else {
+              // 真·非法的新上传（超大 / 格式错）：删除并拒绝
+              await deleteBackgroundByKey(newKey);
+              const reasonMsg =
+                verify.reason === 'too_large'
+                  ? '图片超出 100MB 上限'
+                  : '图片格式不支持';
+              throw new TRPCError({ code: 'BAD_REQUEST', message: reasonMsg });
+            }
           }
         }
       }
@@ -110,16 +124,17 @@ export const settingsRouter = router({
           .update(settings)
           .set({
             theme: input.appearance.theme,
-            backgroundEffect: input.appearance.backgroundEffect,
+            backgroundEffect: effectiveBackgroundEffect,
             clockFormat: input.appearance.clockFormat,
             enableBlur: input.appearance.enableBlur,
             showGrid: input.appearance.showGrid,
             showAnimatedText: input.appearance.showAnimatedText,
             showTypographicHero: input.appearance.showTypographicHero,
             colorScheme: input.appearance.colorScheme,
-            customBackgroundUrl: newCustomUrl,
+            customBackgroundUrl: effectiveCustomUrl,
             uiVariant: input.appearance.uiVariant,
             uiFont: input.appearance.uiFont,
+            showRecentLinks: input.appearance.showRecentLinks,
             defaultEngine: input.search.defaultEngine,
             openInNewTab: input.search.openInNewTab,
             showTitle: input.bookmarks.showTitle,
@@ -128,23 +143,24 @@ export const settingsRouter = router({
           .where(eq(settings.userId, ctx.userId));
 
         // 旧背景图与新值不同时，从 R2 删除旧文件
-        if (oldCustomUrl && oldCustomUrl !== newCustomUrl) {
+        if (oldCustomUrl && oldCustomUrl !== effectiveCustomUrl) {
           await deleteBackgroundIfOurs(oldCustomUrl);
         }
       } else {
         await db.insert(settings).values({
           userId: ctx.userId,
           theme: input.appearance.theme,
-          backgroundEffect: input.appearance.backgroundEffect,
+          backgroundEffect: effectiveBackgroundEffect,
           clockFormat: input.appearance.clockFormat,
           enableBlur: input.appearance.enableBlur,
           showGrid: input.appearance.showGrid,
           showAnimatedText: input.appearance.showAnimatedText,
           showTypographicHero: input.appearance.showTypographicHero,
           colorScheme: input.appearance.colorScheme,
-          customBackgroundUrl: newCustomUrl,
+          customBackgroundUrl: effectiveCustomUrl,
           uiVariant: input.appearance.uiVariant,
           uiFont: input.appearance.uiFont,
+          showRecentLinks: input.appearance.showRecentLinks,
           defaultEngine: input.search.defaultEngine,
           openInNewTab: input.search.openInNewTab,
           showTitle: input.bookmarks.showTitle,

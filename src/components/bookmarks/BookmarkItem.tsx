@@ -7,6 +7,7 @@ import { useBookmarks } from '@/context/BookmarkContext';
 import { useSettings } from '@/context/SettingsContext';
 import BookmarkContextMenu from './BookmarkContextMenu';
 import FaviconImage from '@/components/common/FaviconImage';
+import PinIcon from '@/components/icons/PinIcon';
 
 interface BookmarkItemProps {
   bookmark: Bookmark;
@@ -97,6 +98,15 @@ export default function BookmarkItem({ bookmark, isDragging = false }: BookmarkI
           ${isDragging ? 'shadow-2xl scale-105 border-(--color-accent) cursor-grabbing' : 'cursor-grab'}
         `}
       >
+        {bookmark.pinnedToHome && (
+          <span
+            className="absolute top-1.5 right-1.5 text-(--color-accent) pointer-events-none"
+            title="Pinned to home"
+          >
+            <PinIcon size={14} />
+          </span>
+        )}
+
         <FaviconImage
           url={bookmark.url}
           customIconUrl={bookmark.iconUrl ?? undefined}

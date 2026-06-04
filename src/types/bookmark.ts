@@ -5,5 +5,6 @@ export interface Bookmark {
   url: string;
   iconUrl?: string | null;
   position: number;
+  pinnedToHome: boolean;
   createdAt: string;
 }

@@ -10,6 +10,8 @@ import FaviconImage from "@/components/common/FaviconImage";
 interface BookmarkFormProps {
   onClose: () => void;
   editBookmark?: Bookmark;
+  /** 新增模式下创建的书签是否固定到主页快捷栏 */
+  createPinnedToHome?: boolean;
 }
 
 const ALLOWED_MIME = new Set([
@@ -21,7 +23,7 @@ const ALLOWED_MIME = new Set([
 ]);
 const MAX_SIZE = 512 * 1024;
 
-export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProps) {
+export default function BookmarkForm({ onClose, editBookmark, createPinnedToHome = false }: BookmarkFormProps) {
   const { addBookmark, updateBookmark } = useBookmarks();
   const blurStyle = useBlurStyle();
   const [title, setTitle] = useState(editBookmark?.title || "");
@@ -130,7 +132,7 @@ export default function BookmarkForm({ onClose, editBookmark }: BookmarkFormProp
     if (isEditMode && editBookmark) {
       updateBookmark(editBookmark.id, { title, url, iconUrl: finalIconUrl });
     } else {
-      addBookmark({ title, url, iconUrl: finalIconUrl });
+      addBookmark({ title, url, iconUrl: finalIconUrl, pinnedToHome: createPinnedToHome });
     }
     onClose();
   };

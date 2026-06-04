@@ -266,6 +266,25 @@ export default function AppearanceSection() {
           />
         </div>
 
+        {/* Quick Access Bar (Recently Used) */}
+        <div className="flex items-center justify-between">
+          <div>
+            <label
+              className="block text-sm font-bold uppercase tracking-wide text-(--text-primary)"
+              style={{ fontFamily: "var(--font-oxanium)" }}
+            >
+              Quick Access Bar
+            </label>
+            <p className="text-xs text-(--text-muted) mt-1">
+              Show pinned bookmarks below the search box
+            </p>
+          </div>
+          <SettingsToggle
+            checked={settings.appearance.showRecentLinks}
+            onChange={(checked) => updateAppearance({ showRecentLinks: checked })}
+          />
+        </div>
+
         {/* Enable Blur */}
         <div className="flex items-center justify-between">
           <div>

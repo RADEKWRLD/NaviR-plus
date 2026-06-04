@@ -12,6 +12,7 @@ const bookmarkSchema = z.object({
   url: z.string(),
   iconUrl: z.string().nullable().optional(),
   position: z.number().int().min(0),
+  pinnedToHome: z.boolean().optional(),
   createdAt: z.string().optional(),
 });
 
@@ -40,6 +41,7 @@ export const bookmarkRouter = router({
       url: b.url,
       iconUrl: b.iconUrl,
       position: b.position,
+      pinnedToHome: b.pinnedToHome,
       createdAt: b.createdAt?.toISOString() || new Date().toISOString(),
     }));
   }),
@@ -68,6 +70,7 @@ export const bookmarkRouter = router({
             url: b.url,
             iconUrl: b.iconUrl ?? null,
             position: b.position,
+            pinnedToHome: b.pinnedToHome ?? false,
             createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
             updatedAt: new Date(),
           })),
@@ -96,6 +99,7 @@ export const bookmarkRouter = router({
           url: input.url,
           iconUrl: input.iconUrl ?? null,
           position: input.position,
+          pinnedToHome: input.pinnedToHome ?? false,
           createdAt: input.createdAt ? new Date(input.createdAt) : new Date(),
           updatedAt: new Date(),
         })
@@ -107,6 +111,7 @@ export const bookmarkRouter = router({
         url: result.url,
         iconUrl: result.iconUrl,
         position: result.position,
+        pinnedToHome: result.pinnedToHome,
         createdAt: result.createdAt?.toISOString() || new Date().toISOString(),
       };
     }),
@@ -119,6 +124,7 @@ export const bookmarkRouter = router({
         title: z.string().min(1).optional(),
         url: z.string().optional(),
         iconUrl: z.string().nullable().optional(),
+        pinnedToHome: z.boolean().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -155,6 +161,7 @@ export const bookmarkRouter = router({
         url: result.url,
         iconUrl: result.iconUrl,
         position: result.position,
+        pinnedToHome: result.pinnedToHome,
         createdAt: result.createdAt?.toISOString() || new Date().toISOString(),
       };
     }),

@@ -18,6 +18,7 @@ const CustomImageBackground = dynamic(() => import('@/components/background/Cust
 const AnimatedTypographyLayer = dynamic(() => import('@/components/typography/AnimatedTypographyLayer'), { ssr: false });
 const TypographicHero = dynamic(() => import('@/components/typography/TypographicHero'), { ssr: false });
 const BookmarkModal = dynamic(() => import('@/components/bookmarks/BookmarkModal'), { ssr: false });
+const RecentLinksBar = dynamic(() => import('@/components/recent/RecentLinksBar'), { ssr: false });
 
 export default function Home() {
   const [showBookmarkModal, setShowBookmarkModal] = useState(false);
@@ -97,6 +98,9 @@ export default function Home() {
 
           {/* Search input */}
           <SearchInput />
+
+          {/* Quick access bar (pinned bookmarks) below search */}
+          <RecentLinksBar />
         </div>
       </div>
 
