@@ -36,6 +36,11 @@ export default function Home() {
   // 书签栏触发：桌面端右键，移动端单击背景
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // 在输入框等可编辑元素内保留浏览器原生右键菜单（如粘贴）
+      if (target.closest('input, textarea, [contenteditable="true"]')) {
+        return;
+      }
       e.preventDefault();
       setShowBookmarkModal(true);
     };
